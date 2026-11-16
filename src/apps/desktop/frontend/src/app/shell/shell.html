@@ -1,0 +1,59 @@
+<ng-container *transloco="let t">
+  <header class="topbar" [class.mac]="isMac" (dblclick)="onTitleDoubleClick($event)">
+    <div class="brand">
+      <img class="brand-logo" src="favicon.png" alt="" />
+      <span class="brand-name">{{ t('app.name') }}</span>
+    </div>
+
+    @if (!isMac) {
+      <div class="window-buttons">
+        <button
+          type="button"
+          class="window-btn"
+          [attr.aria-label]="t('window.minimise')"
+          [attr.title]="t('window.minimise')"
+          (click)="minimise()"
+        >
+          <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 5.5h8" /></svg>
+        </button>
+        <button
+          type="button"
+          class="window-btn"
+          [attr.aria-label]="t(maximised() ? 'window.restore' : 'window.maximise')"
+          [attr.title]="t(maximised() ? 'window.restore' : 'window.maximise')"
+          (click)="toggleMaximise()"
+        >
+          @if (maximised()) {
+            <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M3 1h6v6M1 3h6v6H1z" /></svg>
+          } @else {
+            <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 1h8v8H1z" /></svg>
+          }
+        </button>
+        <button
+          type="button"
+          class="window-btn close"
+          [attr.aria-label]="t('window.close')"
+          [attr.title]="t('window.close')"
+          (click)="close()"
+        >
+          <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 1l8 8M9 1l-8 8" /></svg>
+        </button>
+      </div>
+    }
+  </header>
+
+  <div class="body">
+    <aside class="sidebar">
+      <p class="empty">{{ t('sidebar.noWorkspace') }}</p>
+    </aside>
+    <main class="content">
+      <div class="empty">
+        <h1>{{ t('home.title') }}</h1>
+        <p>{{ t('home.subtitle') }}</p>
+        @if (version()) {
+          <p class="version">{{ t('home.version', { version: version() }) }}</p>
+        }
+      </div>
+    </main>
+  </div>
+</ng-container>

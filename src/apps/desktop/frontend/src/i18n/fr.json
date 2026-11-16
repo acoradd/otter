@@ -1,0 +1,24 @@
+{
+  "app": {
+    "name": "Otter"
+  },
+  "window": {
+    "minimise": "Réduire",
+    "maximise": "Agrandir",
+    "restore": "Restaurer",
+    "close": "Fermer"
+  },
+  "sidebar": {
+    "noWorkspace": "Aucun espace de travail"
+  },
+  "home": {
+    "title": "Bienvenue dans Otter",
+    "subtitle": "Créez un espace de travail ou importez une collection pour commencer.",
+    "version": "Version {version}"
+  },
+  "errors": {
+    "INTERNAL": "Une erreur est survenue. Réessayez ; si elle persiste, redémarrez Otter.",
+    "NOT_FOUND": "Cet élément n’existe plus.",
+    "INVALID_INPUT": "Cette valeur n'est pas valide."
+  }
+}

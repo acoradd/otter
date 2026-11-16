@@ -1,0 +1,24 @@
+{
+  "app": {
+    "name": "Otter"
+  },
+  "window": {
+    "minimise": "Minimise",
+    "maximise": "Maximise",
+    "restore": "Restore",
+    "close": "Close"
+  },
+  "sidebar": {
+    "noWorkspace": "No workspace yet"
+  },
+  "home": {
+    "title": "Welcome to Otter",
+    "subtitle": "Create a workspace or import a collection to get started.",
+    "version": "Version {version}"
+  },
+  "errors": {
+    "INTERNAL": "Something went wrong. Try again; if it persists, restart Otter.",
+    "NOT_FOUND": "This item no longer exists.",
+    "INVALID_INPUT": "This value is not valid."
+  }
+}

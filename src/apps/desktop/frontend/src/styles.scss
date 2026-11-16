@@ -1,0 +1,158 @@
+// Design tokens and shared building blocks. Components use these before
+// adding styles of their own; repeated patterns are mixins in
+// src/styles/_mixins.scss.
+//
+// Dark is the reference palette (docs/design/mockups.html). The theme follows
+// the system, unless <html data-theme="light|dark"> forces one.
+
+:root {
+  color-scheme: light dark;
+
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --text-xs: 11px;
+  --text-sm: 12px;
+  --text-md: 13px;
+  --text-lg: 15px;
+  --text-xl: 20px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+
+  --radius: 6px;
+  --topbar-height: 40px;
+  --sidebar-width: 300px;
+
+  // Light theme
+  --color-bg: #f6f7f9;
+  --color-surface: #ffffff;
+  --color-surface-2: #eef0f3;
+  --color-border: #dde1e7;
+  --color-hover: rgb(0 0 0 / 6%);
+  --color-text: #1a1f27;
+  --color-text-muted: #5b6573;
+  --color-accent: #2f8f86;
+  --color-accent-contrast: #ffffff;
+  --color-danger: #c74545;
+  --color-warning: #b9781f;
+  --color-success: #2e9a5e;
+
+  // HTTP methods
+  --method-get: #2e9a5e;
+  --method-post: #b9781f;
+  --method-put: #2f6fc0;
+  --method-patch: #8a63c9;
+  --method-delete: #c74545;
+}
+
+@mixin dark {
+  --color-bg: #0f1216;
+  --color-surface: #151920;
+  --color-surface-2: #1e232b;
+  --color-border: #262c35;
+  --color-hover: rgb(255 255 255 / 6%);
+  --color-text: #e6e9ee;
+  --color-text-muted: #9aa4b2;
+  --color-accent: #4fb3a9;
+  --color-accent-contrast: #0b0d10;
+  --color-danger: #ef8a8a;
+  --color-warning: #e8b65a;
+  --color-success: #5fc48a;
+
+  --method-get: #7fd4a2;
+  --method-post: #f0a35e;
+  --method-put: #6aa8f0;
+  --method-patch: #b9a3f0;
+  --method-delete: #f2a3a3;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    @include dark;
+  }
+}
+
+:root[data-theme='dark'] {
+  @include dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-xl);
+  font-weight: 600;
+}
+
+p {
+  margin: 0 0 var(--space-2);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+code,
+kbd,
+pre {
+  font-family: var(--font-mono);
+}
+
+// An empty state: centered, muted text.
+.empty {
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface-2);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--color-hover);
+  }
+
+  &.primary {
+    border-color: var(--color-accent);
+    background: var(--color-accent);
+    color: var(--color-accent-contrast);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}

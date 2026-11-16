@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Name=Otter
+Comment=Lightweight HTTP client for large collections
+# The Exec line includes %u to pass the URL to the application
+Exec=/usr/local/bin/otter %u
+Terminal=false
+Type=Application
+Icon=otter
+Categories=Utility;
+StartupWMClass=otter
+
+ 

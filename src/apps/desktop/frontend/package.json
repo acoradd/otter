@@ -1,0 +1,43 @@
+{
+  "name": "otter",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "dev": "ng serve",
+    "build": "ng build",
+    "build:dev": "ng build --configuration development",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test --watch=false",
+    "i18n:check": "node scripts/check-i18n.mjs"
+  },
+  "private": true,
+  "license": "GPL-3.0-only",
+  "dependencies": {
+    "@angular/common": "^22.2.6",
+    "@angular/compiler": "^22.2.6",
+    "@angular/core": "^22.2.6",
+    "@angular/forms": "^22.2.6",
+    "@angular/platform-browser": "^22.2.6",
+    "@angular/router": "^22.2.6",
+    "@fontsource/inter": "5.3.0",
+    "@fontsource/jetbrains-mono": "5.3.0",
+    "@jsverse/transloco": "8.4.0",
+    "@jsverse/transloco-messageformat": "8.4.0",
+    "@wailsio/runtime": "3.1.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.9.1"
+  },
+  "devDependencies": {
+    "@angular/build": "^22.2.6",
+    "@angular/cli": "^22.2.6",
+    "@angular/compiler-cli": "^22.2.6",
+    "@messageformat/core": "^3.4.1",
+    "@messageformat/parser": "^5.2.0",
+    "@types/node": "^24.0.0",
+    "@vitest/coverage-v8": "^5.1.0",
+    "jsdom": "^30.0.0",
+    "prettier": "^3.8.1",
+    "typescript": "~6.0.2",
+    "vitest": "^5.1.0"
+  }
+}
