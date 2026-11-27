@@ -3,6 +3,7 @@ module github.com/acoradd/otter/src
 go 1.26.0
 
 require (
+	github.com/andybalholm/brotli v1.2.8
 	github.com/wailsapp/wails/v3 v3.1.0
 	modernc.org/sqlite v1.63.0
 )

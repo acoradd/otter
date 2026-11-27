@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { System, Window } from '@wailsio/runtime';
 import { AppService } from '@bindings/apps/desktop';
@@ -48,6 +55,7 @@ export class Shell {
   /** What the content shows next to the sidebar. */
   protected readonly panel = signal<'home' | 'environments'>('home');
   protected readonly creating = signal(false);
+  private readonly requestEditor = viewChild(RequestEditor);
   /** The tab with unsaved changes the user asked to close. */
   protected readonly closing = signal<Tab | null>(null);
   protected readonly asRequest = (t: Tab) => t as RequestTab;
@@ -74,14 +82,17 @@ export class Shell {
     }
   }
 
-  /** Ctrl+S saves the active editor, Ctrl+W closes it (Cmd on macOS). */
+  /** Ctrl+Enter sends the active request, Ctrl+S saves the active editor, Ctrl+W closes it (Cmd on macOS). */
   protected onKeydown(event: KeyboardEvent): void {
     if (!(event.ctrlKey || event.metaKey) || event.altKey || event.shiftKey) {
       return;
     }
     const key = event.key.toLowerCase();
     const active = this.tabs.active();
-    if (key === 's') {
+    if (key === 'enter') {
+      event.preventDefault();
+      this.requestEditor()?.send();
+    } else if (key === 's') {
       event.preventDefault();
       if (active) {
         void this.tabs.save(tabKey(active));

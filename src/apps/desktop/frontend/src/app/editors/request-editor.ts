@@ -9,6 +9,8 @@ import {
 } from '@bindings/apps/desktop';
 
 import { CodeEditor, CodeLanguage } from '../code-editor/code-editor';
+import { SendStore } from '../core/send.store';
+import { ResponsePanel } from '../response/response-panel';
 import { errorKey } from '../core/error-key';
 import { PreviewStore, varMap } from '../core/preview.store';
 import { RequestTab, TabsStore, isDirty, tabKey } from '../core/tabs.store';
@@ -34,7 +36,16 @@ const LANGUAGES: Record<string, CodeLanguage> = { json: 'json', xml: 'xml', text
 /** The request editor: method and URL, then headers, variables, body, script and settings. */
 @Component({
   selector: 'app-request-editor',
-  imports: [TranslocoDirective, MergedHeaders, MergedVars, BodyFields, CodeEditor, VarInput],
+  imports: [
+    TranslocoDirective,
+    MergedHeaders,
+    MergedVars,
+    BodyFields,
+    CodeEditor,
+    VarInput,
+    ResponsePanel,
+  ],
+  host: { '[style.--split]': 'split() + "%"' },
   templateUrl: './request-editor.html',
   styleUrl: './editor.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -45,6 +56,10 @@ export class RequestEditor {
   private readonly transloco = inject(TranslocoService);
 
   protected readonly section = signal<Section>('headers');
+  private readonly sends = inject(SendStore);
+  protected readonly sending = computed(() => this.sends.state(this.tab().id).sending);
+  /** Height of the request part, in % of the editor; the response gets the rest. */
+  protected readonly split = signal(55);
   protected readonly bodyTypes = BODY_TYPES;
   protected readonly draft = computed(() => this.tab().draft);
   protected readonly dirty = computed(() => isDirty(this.tab()));
@@ -115,6 +130,32 @@ export class RequestEditor {
   protected number(value: string, fallback: number): number {
     const n = Number.parseInt(value, 10);
     return Number.isFinite(n) ? n : fallback;
+  }
+
+  send(): void {
+    void this.sends.send(this.tab().id, this.draft());
+  }
+
+  protected cancel(): void {
+    this.sends.cancel(this.tab().id);
+  }
+
+  /** Drags the splitter between the request and its response (pointer events). */
+  protected startResize(event: PointerEvent): void {
+    const host = (event.target as HTMLElement).parentElement!;
+    const box = host.getBoundingClientRect();
+    const move = (e: PointerEvent) => {
+      if (box.height > 0) {
+        this.split.set(Math.min(85, Math.max(20, ((e.clientY - box.top) / box.height) * 100)));
+      }
+    };
+    const up = () => {
+      document.removeEventListener('pointermove', move);
+      document.removeEventListener('pointerup', up);
+    };
+    document.addEventListener('pointermove', move);
+    document.addEventListener('pointerup', up);
+    event.preventDefault();
   }
 
   protected save(): void {

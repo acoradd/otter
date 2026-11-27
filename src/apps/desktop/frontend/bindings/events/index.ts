@@ -19,6 +19,11 @@ export const EnvironmentChanged = "environment.changed";
 export const FolderChanged = "folder.changed";
 
 /**
+ * Name of the custom event "history.changed".
+ */
+export const HistoryChanged = "history.changed";
+
+/**
  * Name of the custom event "request.changed".
  */
 export const RequestChanged = "request.changed";

@@ -67,10 +67,10 @@ export class FakeBackend {
         const callArgs = args.args ?? [];
         this.calls.push({ name, args: callArgs });
         const answer = this.answers.get(name);
-        const value =
-          typeof answer === 'function'
-            ? (answer as (...a: unknown[]) => unknown)(...callArgs)
-            : answer;
+        // An answer may be a promise: Go still working (sending, a dialog open).
+        const value = await (typeof answer === 'function'
+          ? (answer as (...a: unknown[]) => unknown)(...callArgs)
+          : answer);
         return structuredClone(value ?? null);
       },
     });

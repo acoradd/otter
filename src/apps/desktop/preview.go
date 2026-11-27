@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"os"
+	"strings"
 
 	"github.com/acoradd/otter/src/internal/resolve"
 	"github.com/acoradd/otter/src/internal/store"
@@ -25,7 +27,36 @@ func (s *PreviewService) GetRequestPreview(ctx context.Context, requestID int64,
 	if err != nil {
 		return resolve.Preview{}, err
 	}
-	return resolve.Resolve(in), nil
+	p := resolve.Resolve(in)
+	checkFiles(&p)
+	return p, nil
+}
+
+// WarnFileNotFound is a file to send that cannot be read now (param path).
+// resolve is pure and cannot know: the service looks.
+const WarnFileNotFound = "FILE_NOT_FOUND"
+
+// checkFiles warns about the files of the body that are not there; the
+// request can still be sent, without them.
+func checkFiles(p *resolve.Preview) {
+	var files []string
+	switch p.BodyType {
+	case "binary":
+		if strings.TrimSpace(p.BodyFile) != "" {
+			files = append(files, p.BodyFile)
+		}
+	case "multipart":
+		for _, f := range p.BodyFields {
+			if f.File {
+				files = append(files, f.Value)
+			}
+		}
+	}
+	for _, f := range files {
+		if info, err := os.Stat(f); err != nil || info.IsDir() {
+			p.Warnings = append(p.Warnings, resolve.Warning{Code: WarnFileNotFound, Params: map[string]string{"path": f}})
+		}
+	}
 }
 
 // GetFolderPreview resolves the variables and headers at the level of a

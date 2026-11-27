@@ -3,6 +3,9 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
+	"io"
+	"net/http"
+	"strings"
 
 	"github.com/acoradd/otter/src/internal/store"
 	"os"
@@ -98,6 +101,22 @@ func TestWriteFrontendFixtures(t *testing.T) {
 
 	// Linux, so the User-Agent does not depend on who writes the fixtures.
 	preview := NewPreviewService(db, "linux")
+
+	// A send answered by a fixed response: the fixtures do not change between runs.
+	send := NewSendService(db, preview, rec.emit, fixedClock(), nativeDialogs{})
+	send.transport = roundTrip(func(r *http.Request) *http.Response {
+		body := `{"id":"cus_42","name":"Ada Lovelace","email":"ada@example.test","cards":[]}`
+		return &http.Response{
+			StatusCode: 201, Status: "201 Created", Proto: "HTTP/1.1", ProtoMajor: 1, ProtoMinor: 1,
+			Header: http.Header{
+				"Content-Type": {"application/json; charset=utf-8"},
+				"Location":     {"/v1/customers/cus_42"},
+				"X-Request-Id": {"req_7f3a"},
+			},
+			Body: io.NopCloser(strings.NewReader(body)), ContentLength: int64(len(body)), Request: r,
+		}
+	})
+	response := must(send.SendRequest(ctx, createCustomer, draft))
 	fixtures := map[string]any{
 		"app-info":         AppInfo{Version: "1.0.0"},
 		"settings":         must(settings.GetSettings(ctx)),
@@ -111,6 +130,8 @@ func TestWriteFrontendFixtures(t *testing.T) {
 		"request-view":     must(editor.GetRequestView(ctx, createCustomer)),
 		"folder-view":      must(editor.GetFolderView(ctx, customers)),
 		"request-preview":  must(preview.GetRequestPreview(ctx, createCustomer, draft)),
+		"response-view":    response,
+		"history":          must(send.GetHistory(ctx, createCustomer)),
 		"folder-preview":   must(preview.GetFolderPreview(ctx, customers, must(editor.GetFolderView(ctx, customers)).Draft)),
 	}
 	for name, view := range fixtures {
@@ -123,3 +144,8 @@ func TestWriteFrontendFixtures(t *testing.T) {
 		}
 	}
 }
+
+// roundTrip answers every request with the given function.
+type roundTrip func(*http.Request) *http.Response
+
+func (f roundTrip) RoundTrip(r *http.Request) (*http.Response, error) { return f(r), nil }

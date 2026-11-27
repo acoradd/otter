@@ -4,6 +4,7 @@
 import * as AppService from "./appservice.js";
 import * as EditorService from "./editorservice.js";
 import * as PreviewService from "./previewservice.js";
+import * as SendService from "./sendservice.js";
 import * as SettingsService from "./settingsservice.js";
 import * as TreeService from "./treeservice.js";
 import * as WorkspaceService from "./workspaceservice.js";
@@ -11,6 +12,7 @@ export {
     AppService,
     EditorService,
     PreviewService,
+    SendService,
     SettingsService,
     TreeService,
     WorkspaceService
@@ -30,8 +32,10 @@ export type {
     FolderDraft,
     FolderView,
     HeaderRow,
+    HistoryItem,
     RequestDraft,
     RequestView,
+    ResponseView,
     Settings,
     TreeChange,
     TreeNode,

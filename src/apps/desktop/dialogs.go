@@ -21,6 +21,18 @@ func (nativeDialogs) OpenFile(dir string) (string, error) {
 	return d.PromptForSingleSelection()
 }
 
+func (nativeDialogs) SaveFile(dir, name string) (string, error) {
+	app := application.Get()
+	d := app.Dialog.SaveFile().CanCreateDirectories(true).SetFilename(name)
+	if dir != "" {
+		d.SetDirectory(dir)
+	}
+	if w, ok := app.Window.GetByName(MainWindowName); ok {
+		d.AttachToWindow(w)
+	}
+	return d.PromptForSingleSelection()
+}
+
 // dirOf is the folder of a file path, "" for no path.
 func dirOf(path string) string {
 	if path == "" {

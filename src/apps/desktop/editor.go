@@ -85,10 +85,12 @@ type FolderView struct {
 	Draft FolderDraft `json:"draft"`
 }
 
-// Dialogs are the native dialogs the editors open.
+// Dialogs are the native dialogs the app opens.
 type Dialogs interface {
 	// OpenFile asks for a file, starting in dir; "" when cancelled.
 	OpenFile(dir string) (string, error)
+	// SaveFile asks where to save a file, suggesting name; "" when cancelled.
+	SaveFile(dir, name string) (string, error)
 }
 
 // EditorService loads and saves requests and folders for their editors.

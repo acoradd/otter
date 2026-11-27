@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"time"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
 
@@ -29,6 +30,7 @@ func init() {
 	application.RegisterEvent[int64](EventRequestChanged)
 	application.RegisterEvent[int64](EventFolderChanged)
 	application.RegisterEvent[int64](EventRuntimeVarsChanged)
+	application.RegisterEvent[int64](EventHistoryChanged)
 }
 
 func main() {
@@ -48,6 +50,8 @@ func main() {
 		}
 	}
 
+	previews := NewPreviewService(db, runtime.GOOS)
+
 	app := application.New(application.Options{
 		Name:        "Otter",
 		Description: "Lightweight HTTP client for large collections",
@@ -57,7 +61,8 @@ func main() {
 			service(NewWorkspaceService(db, emit)),
 			service(NewTreeService(db, emit)),
 			service(NewEditorService(db, emit, nativeDialogs{})),
-			service(NewPreviewService(db, runtime.GOOS)),
+			service(previews),
+			service(NewSendService(db, previews, emit, time.Now, nativeDialogs{})),
 		},
 		Assets: application.AssetOptions{
 			Handler: application.AssetFileServerFS(assets),

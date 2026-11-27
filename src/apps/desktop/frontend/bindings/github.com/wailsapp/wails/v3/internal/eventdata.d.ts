@@ -14,6 +14,7 @@ declare module "@wailsio/runtime" {
         interface CustomEvents {
             "environment.changed": number;
             "folder.changed": number;
+            "history.changed": number;
             "request.changed": number;
             "runtimeVars.changed": number;
             "settings.changed": main$0.Settings;

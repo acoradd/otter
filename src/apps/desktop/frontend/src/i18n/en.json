@@ -87,7 +87,20 @@
     "INVALID_TIMEOUT": "The timeout must be between 1 ms and 1 hour.",
     "INVALID_MAX_REDIRECTS": "The maximum number of redirects must be between 0 and 100.",
     "HEADER_NAME_REQUIRED": "A header has a value but no name.",
-    "FIELD_NAME_REQUIRED": "A body field has a value but no name."
+    "FIELD_NAME_REQUIRED": "A body field has a value but no name.",
+    "SEND_CANCELLED": "The request was cancelled.",
+    "SEND_TIMEOUT": "No complete response within the timeout.",
+    "TOO_MANY_REDIRECTS": "Stopped after {max} redirects.",
+    "HOST_NOT_FOUND": "The host {host} was not found (DNS).",
+    "CONNECTION_REFUSED": "The server refused the connection.",
+    "TLS_ERROR": "The secure connection failed (certificate or TLS).",
+    "FILE_NOT_FOUND": "The file {path} cannot be read.",
+    "PROXY_ERROR": "The proxy cannot be used.",
+    "NETWORK_ERROR": "The request could not be sent (network error).",
+    "DECOMPRESS_ERROR": "The response could not be decompressed.",
+    "CERTIFICATE_FILE_ERROR": "The certificate file {path} cannot be used.",
+    "BODY_NOT_KEPT": "This body was not kept: send the request again.",
+    "WRITE_FAILED": "The file {path} could not be written."
   },
   "tree": {
     "title": "Requests",
@@ -196,6 +209,34 @@
     "VAR_CYCLE": "'{{'{name}'}}' refers to itself, directly or not (or too deeply).",
     "EMPTY_HEADER": "The header {name} is empty once its variables are replaced. It is still sent.",
     "INVALID_URL": "The URL “{url}” is not a valid http or https URL.",
-    "EMPTY_URL": "The URL is empty."
+    "EMPTY_URL": "The URL is empty.",
+    "FILE_NOT_FOUND": "The file {path} cannot be found: it will be left out."
+  },
+  "response": {
+    "send": "Send",
+    "sendShortcut": "Send (Ctrl+Enter)",
+    "cancel": "Cancel",
+    "sending": "Sending…",
+    "failed": "Failed",
+    "empty": "Send the request to see its response (Ctrl+Enter).",
+    "duration": "Time",
+    "size": "Size of the body",
+    "compressed": "{size} transferred ({encoding})",
+    "fromHistory": "From the history, sent {when}",
+    "body": "Body",
+    "headers": "Headers",
+    "sent": "Request sent",
+    "redirects": "Redirects",
+    "history": "History",
+    "pretty": "Pretty",
+    "raw": "Raw",
+    "save": "Save to a file",
+    "noBody": "The response has no body.",
+    "large": "The body is {size} ({type}): too large to show here.",
+    "binary": "The body is binary ({size}, {type}).",
+    "notKept": "This body was not kept: send the request again to save it.",
+    "savedTo": "Saved to {path}",
+    "noHistory": "Nothing sent yet.",
+    "resize": "Resize the response"
   }
 }

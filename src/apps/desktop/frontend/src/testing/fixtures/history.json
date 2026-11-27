@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "sentAt": 1795771800000,
+    "method": "POST",
+    "url": "https://dev.payments.test/v1/customers?expand=cards",
+    "status": 201,
+    "durationMs": 42,
+    "size": 75,
+    "error": ""
+  }
+]

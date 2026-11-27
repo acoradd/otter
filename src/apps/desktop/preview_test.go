@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"testing"
 
 	"github.com/acoradd/otter/src/internal/apperr"
@@ -74,4 +75,23 @@ func TestPreviewLoadsEveryLayer(t *testing.T) {
 	wantCode(t, err, apperr.NotFound)
 	_, err = s.GetFolderPreview(ctx, 999, FolderDraft{})
 	wantCode(t, err, apperr.NotFound)
+}
+
+func TestPreviewWarnsAboutMissingFiles(t *testing.T) {
+	db := openDB(t)
+	ws := must(NewWorkspaceService(db, func(string, any) {}).CreateWorkspace(ctx, "API"))
+	tree := NewTreeService(db, func(string, any) {})
+	req := must(tree.CreateRequest(ctx, must(tree.CreateFolder(ctx, ws, 0, "f")), "upload"))
+	there := t.TempDir() + "/there.bin"
+	if err := os.WriteFile(there, []byte("x"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	d := RequestDraft{Method: "POST", URL: "https://h", BodyType: "multipart", TimeoutMS: 1000, BodyFields: []BodyFieldRow{
+		{Key: "a", File: true, Value: there, Enabled: true},
+		{Key: "b", File: true, Value: "/nowhere/gone.bin", Enabled: true},
+	}}
+	p := must(NewPreviewService(db, "linux").GetRequestPreview(ctx, req, d))
+	if len(p.Warnings) != 1 || p.Warnings[0].Code != WarnFileNotFound || p.Warnings[0].Params["path"] != "/nowhere/gone.bin" {
+		t.Fatalf("warnings = %+v", p.Warnings)
+	}
 }

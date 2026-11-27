@@ -1,0 +1,218 @@
+<ng-container *transloco="let t">
+  <header class="summary">
+    @if (state().sending) {
+      <span class="sending" role="status">{{ t('response.sending') }}</span>
+    } @else if (response(); as r) {
+      @if (r.error) {
+        <span class="status s5">{{ t('response.failed') }}</span>
+      } @else {
+        <span class="status" [class]="'status ' + statusClass()"
+          >{{ r.status }} {{ r.statusText }}</span
+        >
+        <span class="metric" [attr.title]="t('response.duration')">{{
+          duration(r.durationMs)
+        }}</span>
+        <span class="metric" [attr.title]="t('response.size')">
+          {{ bytes(r.size) }}
+          @if (r.encoding && r.wireSize !== r.size) {
+            <small>{{
+              t('response.compressed', { size: bytes(r.wireSize), encoding: r.encoding })
+            }}</small>
+          }
+        </span>
+      }
+      @if (state().fromHistory) {
+        <span class="pill muted">{{
+          t('response.fromHistory', { when: dateTime(r.sentAt) })
+        }}</span>
+      }
+    } @else if (!state().error) {
+      <span class="hint">{{ t('response.empty') }}</span>
+    }
+    <span class="spacer"></span>
+    <nav class="tabs" role="tablist">
+      <button
+        type="button"
+        role="tab"
+        [class.active]="section() === 'body'"
+        (click)="section.set('body')"
+      >
+        {{ t('response.body') }}
+      </button>
+      <button
+        type="button"
+        role="tab"
+        [class.active]="section() === 'headers'"
+        (click)="section.set('headers')"
+      >
+        {{ t('response.headers') }}
+        @if (response()?.headers?.length) {
+          <span class="count">{{ response()!.headers!.length }}</span>
+        }
+      </button>
+      <button
+        type="button"
+        role="tab"
+        [class.active]="section() === 'sent'"
+        (click)="section.set('sent')"
+      >
+        {{ t('response.sent') }}
+      </button>
+      @if (response()?.redirects?.length) {
+        <button
+          type="button"
+          role="tab"
+          [class.active]="section() === 'redirects'"
+          (click)="section.set('redirects')"
+        >
+          {{ t('response.redirects') }}
+          <span class="count">{{ response()!.redirects!.length }}</span>
+        </button>
+      }
+      <button
+        type="button"
+        role="tab"
+        [class.active]="section() === 'history'"
+        (click)="section.set('history')"
+      >
+        {{ t('response.history') }}
+        @if (state().history.length) {
+          <span class="count">{{ state().history.length }}</span>
+        }
+      </button>
+    </nav>
+  </header>
+
+  @if (state().error; as err) {
+    <div class="alert" role="alert">{{ t(errorKey(err.code), err.params ?? {}) }}</div>
+  }
+
+  <section class="content" role="tabpanel">
+    @switch (section()) {
+      @case ('body') {
+        @if (response(); as r) {
+          @switch (r.bodyKind) {
+            @case ('text') {
+              <div class="body-bar">
+                @if (language() === 'json') {
+                  <div class="seg small">
+                    <button type="button" [class.active]="pretty()" (click)="pretty.set(true)">
+                      {{ t('response.pretty') }}
+                    </button>
+                    <button type="button" [class.active]="!pretty()" (click)="pretty.set(false)">
+                      {{ t('response.raw') }}
+                    </button>
+                  </div>
+                }
+                <span class="spacer"></span>
+                @if (r.saveable) {
+                  <button type="button" class="btn" (click)="save()">
+                    {{ t('response.save') }}
+                  </button>
+                }
+              </div>
+              <app-code-editor
+                class="code"
+                [value]="body()"
+                [language]="language()"
+                [readOnly]="true"
+                [label]="t('response.body')"
+              />
+            }
+            @case ('empty') {
+              @if (!r.error) {
+                <p class="empty">{{ t('response.noBody') }}</p>
+              }
+            }
+            @default {
+              <div class="empty file-body">
+                <p>
+                  {{
+                    t(r.bodyKind === 'large' ? 'response.large' : 'response.binary', {
+                      size: bytes(r.size),
+                      type: r.contentType || '?',
+                    })
+                  }}
+                </p>
+                @if (r.saveable) {
+                  <button type="button" class="btn primary" (click)="save()">
+                    {{ t('response.save') }}
+                  </button>
+                } @else {
+                  <p class="hint">{{ t('response.notKept') }}</p>
+                }
+              </div>
+            }
+          }
+          @if (saved()) {
+            <p class="hint saved">{{ t('response.savedTo', { path: saved() }) }}</p>
+          }
+        }
+      }
+      @case ('headers') {
+        <table class="grid-table readonly">
+          <tbody>
+            @for (h of response()?.headers ?? []; track $index) {
+              <tr>
+                <td class="key mono">{{ h.key }}</td>
+                <td class="mono">{{ h.value }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+      @case ('sent') {
+        @if (response(); as r) {
+          <p class="mono request-line">{{ r.method }} {{ r.url }}</p>
+        }
+        <table class="grid-table readonly">
+          <tbody>
+            @for (h of response()?.sentHeaders ?? []; track $index) {
+              <tr>
+                <td class="key mono">{{ h.key }}</td>
+                <td class="mono">{{ h.value }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+      @case ('redirects') {
+        <ol class="redirects">
+          @for (r of response()?.redirects ?? []; track $index) {
+            <li class="mono">
+              <span class="status s3">{{ r.status }}</span> {{ r.url }} → {{ r.location }}
+            </li>
+          }
+        </ol>
+      }
+      @case ('history') {
+        @if (state().history.length) {
+          <table class="grid-table history">
+            <tbody>
+              @for (h of state().history; track h.id) {
+                <tr [class.current]="response()?.id === h.id" (click)="show(h.id)">
+                  <td class="when">{{ dateTime(h.sentAt) }}</td>
+                  <td class="mono method">{{ h.method }}</td>
+                  <td>
+                    @if (h.error) {
+                      <span class="status s5">{{ t(errorKey(h.error), {}) }}</span>
+                    } @else {
+                      <span class="status" [class]="'status ' + classOf(h.status)">{{
+                        h.status
+                      }}</span>
+                    }
+                  </td>
+                  <td class="mono url" [attr.title]="h.url">{{ h.url }}</td>
+                  <td class="num">{{ duration(h.durationMs) }}</td>
+                  <td class="num">{{ bytes(h.size) }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        } @else {
+          <p class="empty">{{ t('response.noHistory') }}</p>
+        }
+      }
+    }
+  </section>
+</ng-container>

@@ -87,7 +87,20 @@
     "INVALID_TIMEOUT": "Le timeout doit être compris entre 1 ms et 1 heure.",
     "INVALID_MAX_REDIRECTS": "Le nombre de redirections doit être compris entre 0 et 100.",
     "HEADER_NAME_REQUIRED": "Un header a une valeur mais pas de nom.",
-    "FIELD_NAME_REQUIRED": "Un champ du body a une valeur mais pas de nom."
+    "FIELD_NAME_REQUIRED": "Un champ du body a une valeur mais pas de nom.",
+    "SEND_CANCELLED": "La requête a été annulée.",
+    "SEND_TIMEOUT": "Pas de réponse complète avant le timeout.",
+    "TOO_MANY_REDIRECTS": "Arrêt après {max} redirections.",
+    "HOST_NOT_FOUND": "L’hôte {host} est introuvable (DNS).",
+    "CONNECTION_REFUSED": "Le serveur a refusé la connexion.",
+    "TLS_ERROR": "La connexion sécurisée a échoué (certificat ou TLS).",
+    "FILE_NOT_FOUND": "Le fichier {path} est illisible.",
+    "PROXY_ERROR": "Le proxy est inutilisable.",
+    "NETWORK_ERROR": "La requête n’a pas pu partir (erreur réseau).",
+    "DECOMPRESS_ERROR": "La réponse n’a pas pu être décompressée.",
+    "CERTIFICATE_FILE_ERROR": "Le fichier de certificat {path} est inutilisable.",
+    "BODY_NOT_KEPT": "Ce body n’a pas été conservé : renvoyez la requête.",
+    "WRITE_FAILED": "Le fichier {path} n’a pas pu être écrit."
   },
   "tree": {
     "title": "Requêtes",
@@ -196,6 +209,34 @@
     "VAR_CYCLE": "'{{'{name}'}}' fait référence à elle-même, directement ou non (ou trop profondément).",
     "EMPTY_HEADER": "Le header {name} est vide une fois ses variables remplacées. Il est quand même envoyé.",
     "INVALID_URL": "L’URL « {url} » n’est pas une URL http ou https valide.",
-    "EMPTY_URL": "L’URL est vide."
+    "EMPTY_URL": "L’URL est vide.",
+    "FILE_NOT_FOUND": "Le fichier {path} est introuvable : il ne sera pas envoyé."
+  },
+  "response": {
+    "send": "Envoyer",
+    "sendShortcut": "Envoyer (Ctrl+Entrée)",
+    "cancel": "Annuler",
+    "sending": "Envoi…",
+    "failed": "Échec",
+    "empty": "Envoyez la requête pour voir sa réponse (Ctrl+Entrée).",
+    "duration": "Durée",
+    "size": "Taille du body",
+    "compressed": "{size} transférés ({encoding})",
+    "fromHistory": "Historique, envoyée le {when}",
+    "body": "Body",
+    "headers": "Headers",
+    "sent": "Requête envoyée",
+    "redirects": "Redirections",
+    "history": "Historique",
+    "pretty": "Formaté",
+    "raw": "Brut",
+    "save": "Enregistrer dans un fichier",
+    "noBody": "La réponse n’a pas de body.",
+    "large": "Le body fait {size} ({type}) : trop gros pour être affiché ici.",
+    "binary": "Le body est binaire ({size}, {type}).",
+    "notKept": "Ce body n’a pas été conservé : renvoyez la requête pour l’enregistrer.",
+    "savedTo": "Enregistré dans {path}",
+    "noHistory": "Rien n’a encore été envoyé.",
+    "resize": "Redimensionner la réponse"
   }
 }

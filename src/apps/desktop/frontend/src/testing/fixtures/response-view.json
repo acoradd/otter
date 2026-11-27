@@ -1,0 +1,58 @@
+{
+  "id": 1,
+  "sentAt": 1795771800000,
+  "method": "POST",
+  "status": 201,
+  "statusText": "Created",
+  "url": "https://dev.payments.test/v1/customers?expand=cards",
+  "durationMs": 42,
+  "size": 75,
+  "wireSize": 75,
+  "encoding": "",
+  "headers": [
+    {
+      "key": "Content-Type",
+      "value": "application/json; charset=utf-8"
+    },
+    {
+      "key": "Location",
+      "value": "/v1/customers/cus_42"
+    },
+    {
+      "key": "X-Request-Id",
+      "value": "req_7f3a"
+    }
+  ],
+  "redirects": [],
+  "sentHeaders": [
+    {
+      "key": "Host",
+      "value": "dev.payments.test"
+    },
+    {
+      "key": "Accept",
+      "value": "*/*"
+    },
+    {
+      "key": "Authorization",
+      "value": "••••••"
+    },
+    {
+      "key": "Content-Type",
+      "value": "application/json"
+    },
+    {
+      "key": "Idempotency-Key",
+      "value": "{{requestId}}"
+    },
+    {
+      "key": "User-Agent",
+      "value": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+    }
+  ],
+  "contentType": "application/json",
+  "bodyKind": "text",
+  "body": "{\"id\":\"cus_42\",\"name\":\"Ada Lovelace\",\"email\":\"ada@example.test\",\"cards\":[]}",
+  "saveable": true,
+  "error": ""
+}

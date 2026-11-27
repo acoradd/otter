@@ -2,6 +2,8 @@ import {
   EnvironmentView,
   FolderChoice,
   FolderView,
+  HistoryItem,
+  ResponseView,
   RequestView,
   Settings,
   TreeNode,
@@ -15,6 +17,8 @@ import appInfo from './fixtures/app-info.json';
 import environmentView from './fixtures/environment-view.json';
 import folderChoices from './fixtures/folder-choices.json';
 import folderView from './fixtures/folder-view.json';
+import history from './fixtures/history.json';
+import responseView from './fixtures/response-view.json';
 import requestView from './fixtures/request-view.json';
 import requestPreview from './fixtures/request-preview.json';
 import folderPreview from './fixtures/folder-preview.json';
@@ -47,6 +51,9 @@ export const fixtures = {
   requestPreview: (): Preview => structuredClone(requestPreview) as Preview,
   /** The preview of customers (folder 1), as its editor holds it. */
   folderPreview: (): Preview => structuredClone(folderPreview) as Preview,
+  /** "Create customer" sent: 201, a JSON body (fixed clock: 42 ms). */
+  responseView: (): ResponseView => structuredClone(responseView),
+  history: (): HistoryItem[] => structuredClone(history),
 };
 
 /** Go with the demo workspace open ("Payments API", environment dev active). */
@@ -63,7 +70,8 @@ export function demoBackend(): FakeBackend {
     .on('EditorService.GetRequestView', fixtures.requestView())
     .on('EditorService.GetFolderView', fixtures.folderView())
     .on('PreviewService.GetRequestPreview', fixtures.requestPreview())
-    .on('PreviewService.GetFolderPreview', fixtures.folderPreview());
+    .on('PreviewService.GetFolderPreview', fixtures.folderPreview())
+    .on('SendService.GetHistory', []);
 }
 
 /** Go with no workspace yet. */

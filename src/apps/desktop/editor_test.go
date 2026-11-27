@@ -8,10 +8,18 @@ import (
 	"github.com/acoradd/otter/src/internal/store"
 )
 
-// fakeDialogs answers the file dialog with a fixed path and records where it opened.
+// fakeDialogs answers the file dialogs with fixed paths and records where they opened.
 type fakeDialogs struct {
 	answer string
+	save   string
 	dirs   []string
+	names  []string
+}
+
+func (f *fakeDialogs) SaveFile(dir, name string) (string, error) {
+	f.dirs = append(f.dirs, dir)
+	f.names = append(f.names, name)
+	return f.save, nil
 }
 
 func (f *fakeDialogs) OpenFile(dir string) (string, error) {
