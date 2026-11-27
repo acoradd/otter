@@ -100,7 +100,8 @@
     "DECOMPRESS_ERROR": "La réponse n’a pas pu être décompressée.",
     "CERTIFICATE_FILE_ERROR": "Le fichier de certificat {path} est inutilisable.",
     "BODY_NOT_KEPT": "Ce body n’a pas été conservé : renvoyez la requête.",
-    "WRITE_FAILED": "Le fichier {path} n’a pas pu être écrit."
+    "WRITE_FAILED": "Le fichier {path} n’a pas pu être écrit.",
+    "CURL_INVALID": "Cette commande curl n’a pas pu être lue."
   },
   "tree": {
     "title": "Requêtes",
@@ -180,7 +181,10 @@
     "deleteRuntime": "Supprimer la variable runtime {name}",
     "undefinedUsedIn": "Non définie · utilisée dans {where}",
     "defineHere": "Définir ici",
-    "undefinedCount": "{count, plural, one {# variable non définie} other {# variables non définies}}"
+    "undefinedCount": "{count, plural, one {# variable non définie} other {# variables non définies}}",
+    "curlPasted": "Requête remplacée par la commande curl collée (pas encore enregistrée).",
+    "curlIgnored": "Ignorées, sans équivalent dans Otter : {options}",
+    "undo": "Annuler"
   },
   "source": {
     "here": "Défini ici",

@@ -63,6 +63,7 @@ func main() {
 			service(NewEditorService(db, emit, nativeDialogs{})),
 			service(previews),
 			service(NewSendService(db, previews, emit, time.Now, nativeDialogs{})),
+			service(NewImportService()),
 		},
 		Assets: application.AssetOptions{
 			Handler: application.AssetFileServerFS(assets),

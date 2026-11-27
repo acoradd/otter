@@ -6,11 +6,13 @@ import {
   HeaderRow,
   RequestDraft,
   VarRow,
+  ImportService,
 } from '@bindings/apps/desktop';
 
 import { CodeEditor, CodeLanguage } from '../code-editor/code-editor';
 import { SendStore } from '../core/send.store';
 import { ResponsePanel } from '../response/response-panel';
+import { BackendError, backendError } from '../core/backend-error';
 import { errorKey } from '../core/error-key';
 import { PreviewStore, varMap } from '../core/preview.store';
 import { RequestTab, TabsStore, isDirty, tabKey } from '../core/tabs.store';
@@ -60,6 +62,13 @@ export class RequestEditor {
   protected readonly sending = computed(() => this.sends.state(this.tab().id).sending);
   /** Height of the request part, in % of the editor; the response gets the rest. */
   protected readonly split = signal(55);
+  /** The notice after a cURL paste: what was ignored, and the draft to go back to. */
+  protected readonly pasteNotice = signal<{
+    ignored: string[];
+    previous: RequestDraft | null;
+    error: BackendError | null;
+  } | null>(null);
+  private noticeTimer: ReturnType<typeof setTimeout> | undefined;
   protected readonly bodyTypes = BODY_TYPES;
   protected readonly draft = computed(() => this.tab().draft);
   protected readonly dirty = computed(() => isDirty(this.tab()));
@@ -130,6 +139,49 @@ export class RequestEditor {
   protected number(value: string, fallback: number): number {
     const n = Number.parseInt(value, 10);
     return Number.isFinite(n) ? n : fallback;
+  }
+
+  /**
+   * A curl command pasted in the URL bar becomes the request: method, URL,
+   * headers, body and settings are replaced (variables and script stay),
+   * nothing is saved, and the notice offers to undo it.
+   */
+  protected async onPaste(event: ClipboardEvent): Promise<void> {
+    const text = event.clipboardData?.getData('text/plain') ?? '';
+    if (!/^\s*curl(\.exe)?\s/i.test(text)) {
+      return;
+    }
+    event.preventDefault();
+    const previous = this.draft();
+    try {
+      const parsed = await ImportService.ParseCurl(text);
+      this.tabs.edit<RequestDraft>(tabKey(this.tab()), () => ({
+        ...parsed.draft,
+        vars: previous.vars,
+        postScript: previous.postScript,
+      }));
+      this.showNotice({ ignored: parsed.ignored ?? [], previous, error: null });
+    } catch (err) {
+      this.showNotice({ ignored: [], previous: null, error: backendError(err) });
+    }
+  }
+
+  protected undoPaste(): void {
+    const previous = this.pasteNotice()?.previous;
+    if (previous) {
+      this.tabs.edit<RequestDraft>(tabKey(this.tab()), () => previous);
+    }
+    this.pasteNotice.set(null);
+  }
+
+  private showNotice(notice: {
+    ignored: string[];
+    previous: RequestDraft | null;
+    error: BackendError | null;
+  }): void {
+    clearTimeout(this.noticeTimer);
+    this.pasteNotice.set(notice);
+    this.noticeTimer = setTimeout(() => this.pasteNotice.set(null), 12_000);
   }
 
   send(): void {

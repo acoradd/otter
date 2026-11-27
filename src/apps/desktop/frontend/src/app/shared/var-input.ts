@@ -77,6 +77,7 @@ export function segments(text: string, vars: VarMap): Segment[] {
       (select)="sync()"
       (mousemove)="hover($event)"
       (mouseleave)="tip.set(null)"
+      (paste)="pasted.emit($event)"
     />
     @if (tip(); as tp) {
       <div class="var-tip" role="tooltip" [style.left.px]="tp.x" [style.top.px]="tp.y">
@@ -151,6 +152,8 @@ export class VarInput {
   readonly label = input('');
   readonly level = input<Level>('request');
   readonly valueChange = output<string>();
+  /** A paste in the field: the parent may take it over (preventDefault). */
+  readonly pasted = output<ClipboardEvent>();
 
   private readonly transloco = inject(TranslocoService);
   private readonly field = viewChild.required<ElementRef<HTMLInputElement>>('field');

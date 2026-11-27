@@ -202,3 +202,62 @@ describe('RequestEditor', () => {
     expect(input(fixture, 'app-var-input.url input').value).toBe(saved().url);
   });
 });
+
+describe('Pasting a curl command', () => {
+  const paste = (el: HTMLElement, text: string) => {
+    const event = new Event('paste', { bubbles: true, cancelable: true }) as ClipboardEvent;
+    Object.defineProperty(event, 'clipboardData', { value: { getData: () => text } });
+    el.dispatchEvent(event);
+    return event;
+  };
+
+  it('replaces the request, keeps variables and script, and undoes', async () => {
+    const parsed = {
+      draft: {
+        ...saved(),
+        method: 'PUT',
+        url: 'https://api.test/x',
+        headers: [],
+        vars: [],
+        postScript: '',
+      },
+      ignored: ['-k', '--cert'],
+    };
+    const backend = demoBackend().on('ImportService.ParseCurl', parsed);
+    const fixture = await openRequest();
+    const event = paste(
+      find(fixture, 'app-var-input.url input'),
+      "curl -k -X PUT 'https://api.test/x'",
+    );
+    await settle(fixture);
+
+    expect(event.defaultPrevented).toBe(true);
+    expect(backend.argsOf('ImportService.ParseCurl')).toEqual([
+      ["curl -k -X PUT 'https://api.test/x'"],
+    ]);
+    const tab = () => TestBed.inject(TabsStore).active()!.draft as RequestDraft;
+    expect(tab().method).toBe('PUT');
+    expect(tab().vars).toEqual(saved().vars);
+    expect(tab().postScript).toBe(saved().postScript);
+    expect(find(fixture, '.notice').textContent).toContain(
+      'Ignored, no equivalent in Otter: -k, --cert',
+    );
+
+    await click(fixture, 'Undo', '.notice button');
+    expect(tab()).toEqual(saved());
+  });
+
+  it('leaves any other paste alone, and tells a bad command', async () => {
+    const backend = demoBackend().on('ImportService.ParseCurl', () => {
+      throw backendFailure('CURL_INVALID', { reason: 'quote' });
+    });
+    const fixture = await openRequest();
+    const url = find(fixture, 'app-var-input.url input');
+    expect(paste(url, 'https://api.test/plain').defaultPrevented).toBe(false);
+    expect(backend.called('ImportService.ParseCurl')).toBe(false);
+
+    paste(url, "curl 'https://broken");
+    await settle(fixture);
+    expect(find(fixture, '.notice').textContent).toContain('This curl command could not be read.');
+  });
+});

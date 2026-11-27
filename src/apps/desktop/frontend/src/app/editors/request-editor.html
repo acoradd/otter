@@ -25,6 +25,7 @@
         [placeholder]="urlPlaceholder"
         [label]="t('editor.url')"
         (valueChange)="edit({ url: $event })"
+        (pasted)="onPaste($event)"
       />
       @if (sending()) {
         <button type="button" class="btn send" (click)="cancel()">
@@ -41,6 +42,32 @@
         </button>
       }
     </div>
+
+    @if (pasteNotice(); as n) {
+      <div class="notice" [class.bad]="n.error" role="status">
+        @if (n.error) {
+          <span>{{ t(errorKey(n.error.code), n.error.params ?? {}) }}</span>
+        } @else {
+          <span>
+            {{ t('editor.curlPasted') }}
+            @if (n.ignored.length) {
+              <span class="ignored">{{
+                t('editor.curlIgnored', { options: n.ignored.join(', ') })
+              }}</span>
+            }
+          </span>
+          <button type="button" class="btn" (click)="undoPaste()">{{ t('editor.undo') }}</button>
+        }
+        <button
+          type="button"
+          class="icon-btn"
+          [attr.aria-label]="t('common.dismiss')"
+          (click)="pasteNotice.set(null)"
+        >
+          <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8" /></svg>
+        </button>
+      </div>
+    }
 
     @if (warnings().length) {
       <ul class="warnings" role="status">

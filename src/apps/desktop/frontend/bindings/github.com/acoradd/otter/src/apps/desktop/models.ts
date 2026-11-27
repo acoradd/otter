@@ -28,6 +28,18 @@ export interface BodyFieldRow {
 }
 
 /**
+ * CurlDraft is a request read from a curl command, for the editor.
+ */
+export interface CurlDraft {
+    "draft": RequestDraft;
+
+    /**
+     * Ignored are the options Otter has no equivalent for, as typed.
+     */
+    "ignored": string[] | null;
+}
+
+/**
  * EnvVarRow is a row of the environment editor.
  */
 export interface EnvVarRow {

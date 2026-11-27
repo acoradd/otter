@@ -100,7 +100,8 @@
     "DECOMPRESS_ERROR": "The response could not be decompressed.",
     "CERTIFICATE_FILE_ERROR": "The certificate file {path} cannot be used.",
     "BODY_NOT_KEPT": "This body was not kept: send the request again.",
-    "WRITE_FAILED": "The file {path} could not be written."
+    "WRITE_FAILED": "The file {path} could not be written.",
+    "CURL_INVALID": "This curl command could not be read."
   },
   "tree": {
     "title": "Requests",
@@ -180,7 +181,10 @@
     "deleteRuntime": "Delete the runtime variable {name}",
     "undefinedUsedIn": "Not defined · used in {where}",
     "defineHere": "Define here",
-    "undefinedCount": "{count, plural, one {# undefined variable} other {# undefined variables}}"
+    "undefinedCount": "{count, plural, one {# undefined variable} other {# undefined variables}}",
+    "curlPasted": "Request replaced by the pasted curl command (not saved yet).",
+    "curlIgnored": "Ignored, no equivalent in Otter: {options}",
+    "undo": "Undo"
   },
   "source": {
     "here": "Defined here",
