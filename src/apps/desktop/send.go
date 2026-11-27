@@ -353,7 +353,7 @@ func mediaType(headers []httpx.Header) string {
 }
 
 // isText tells a body the editor can show: a text media type, or valid
-// UTF-8 without NUL bytes when the type says nothing.
+// UTF-8 without NUL bytes when the type says nothing precise.
 func isText(contentType string, body []byte) bool {
 	t := strings.ToLower(contentType)
 	switch {
@@ -362,9 +362,11 @@ func isText(contentType string, body []byte) bool {
 		t == "application/x-www-form-urlencoded", t == "application/yaml", t == "application/problem+json":
 		return utf8.Valid(body)
 	case strings.HasPrefix(t, "image/"), strings.HasPrefix(t, "audio/"), strings.HasPrefix(t, "video/"),
-		t == "application/octet-stream", t == "application/pdf", t == "application/zip", t == "application/gzip":
+		t == "application/pdf", t == "application/zip", t == "application/gzip":
 		return false
 	}
+	// No type, or a vague one (application/octet-stream): readable text is
+	// shown, and the frontend recognizes JSON, HTML or XML in it.
 	return utf8.Valid(body) && !strings.ContainsRune(string(body), 0)
 }
 

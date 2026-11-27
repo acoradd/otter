@@ -13,6 +13,7 @@ import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { CodeEditor, CodeLanguage } from '../code-editor/code-editor';
 import { errorKey } from '../core/error-key';
 import { formatBytes, formatDateTime, formatDuration, prettyJson } from '../core/format';
+import { bodyFormat } from '../core/body-format';
 import { prettyMarkup } from '../core/markup';
 import { SendStore } from '../core/send.store';
 
@@ -37,16 +38,12 @@ export class ResponsePanel {
   protected readonly state = computed(() => this.sends.state(this.requestId()));
   protected readonly response = computed(() => this.state().response);
   protected readonly statusClass = computed(() => this.classOf(this.response()?.status ?? 0));
-  protected readonly language = computed<CodeLanguage>(() => {
-    const t = this.response()?.contentType ?? '';
-    return t.includes('json')
-      ? 'json'
-      : t.includes('html')
-        ? 'html'
-        : t.includes('xml')
-          ? 'xml'
-          : 'plaintext';
+  /** The format: from the Content-Type, else recognized in the content. */
+  protected readonly format = computed(() => {
+    const r = this.response();
+    return bodyFormat(r?.contentType ?? '', r?.bodyKind === 'text' ? r.body : '');
   });
+  protected readonly language = computed<CodeLanguage>(() => this.format().format);
   /** JSON, XML and HTML can be shown indented. */
   protected readonly formattable = computed(() => this.language() !== 'plaintext');
   protected readonly body = computed(() => {

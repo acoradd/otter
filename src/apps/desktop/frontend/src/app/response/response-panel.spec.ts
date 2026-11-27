@@ -78,6 +78,22 @@ describe('Sending', () => {
     expect(body()).toBe(html);
   });
 
+  it('recognizes HTML in the content when the Content-Type does not say', async () => {
+    const html = '<div><p>Hi</p></div>';
+    demoBackend().on('SendService.SendRequest', {
+      ...fixtures.responseView(),
+      contentType: 'text/plain',
+      body: html,
+    });
+    const fixture = await openRequest('fr');
+    await click(fixture, 'Envoyer', 'app-request-editor .send');
+
+    expect(
+      (find(fixture, 'app-response-panel app-code-editor textarea') as HTMLTextAreaElement).value,
+    ).toBe('<div>\n  <p>Hi</p>\n</div>');
+    expect(panel(fixture).textContent).toContain('HTML, reconnu dans le contenu');
+  });
+
   it('sends with Ctrl+Enter, and cancels while it runs', async () => {
     let answer!: (v: ResponseView) => void;
     const backend = demoBackend().on(

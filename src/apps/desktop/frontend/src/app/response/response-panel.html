@@ -104,6 +104,18 @@
                     </button>
                   </div>
                 }
+                @if (format().detected) {
+                  <span
+                    class="pill muted"
+                    [attr.title]="
+                      t('response.detectedHint', { type: response()!.contentType || '?' })
+                    "
+                  >
+                    {{
+                      t('response.detected', { format: t('response.formats.' + format().format) })
+                    }}
+                  </span>
+                }
                 <span class="spacer"></span>
                 @if (r.saveable) {
                   <button type="button" class="btn" (click)="save()">

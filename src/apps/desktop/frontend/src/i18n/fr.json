@@ -237,6 +237,14 @@
     "notKept": "Ce body n’a pas été conservé : renvoyez la requête pour l’enregistrer.",
     "savedTo": "Enregistré dans {path}",
     "noHistory": "Rien n’a encore été envoyé.",
-    "resize": "Redimensionner la réponse"
+    "resize": "Redimensionner la réponse",
+    "detected": "{format}, reconnu dans le contenu",
+    "detectedHint": "Le serveur indique {type} : Otter a reconnu le format dans le body.",
+    "formats": {
+      "json": "JSON",
+      "html": "HTML",
+      "xml": "XML",
+      "plaintext": "Texte"
+    }
   }
 }

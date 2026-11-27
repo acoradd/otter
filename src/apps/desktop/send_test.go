@@ -266,3 +266,24 @@ func TestSuggestedName(t *testing.T) {
 		}
 	}
 }
+
+func TestIsText(t *testing.T) {
+	tests := []struct {
+		contentType string
+		body        string
+		want        bool
+	}{
+		{"application/json", `{"a":1}`, true},
+		{"text/html", "<p>é</p>", true},
+		{"", "<html></html>", true},
+		{"application/octet-stream", `{"mislabelled":true}`, true},
+		{"application/octet-stream", "\x89PNG\x00\x01", false},
+		{"image/png", "looks like text", false},
+		{"text/plain", "\xff\xfe", false},
+	}
+	for _, tt := range tests {
+		if got := isText(tt.contentType, []byte(tt.body)); got != tt.want {
+			t.Errorf("isText(%q, %q) = %v, want %v", tt.contentType, tt.body, got, tt.want)
+		}
+	}
+}

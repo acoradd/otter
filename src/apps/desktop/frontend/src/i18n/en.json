@@ -237,6 +237,14 @@
     "notKept": "This body was not kept: send the request again to save it.",
     "savedTo": "Saved to {path}",
     "noHistory": "Nothing sent yet.",
-    "resize": "Resize the response"
+    "resize": "Resize the response",
+    "detected": "{format}, recognized in the content",
+    "detectedHint": "The server says {type}: Otter recognized the format in the body.",
+    "formats": {
+      "json": "JSON",
+      "html": "HTML",
+      "xml": "XML",
+      "plaintext": "Text"
+    }
   }
 }
