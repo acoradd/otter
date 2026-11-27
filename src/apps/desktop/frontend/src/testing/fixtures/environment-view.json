@@ -1,0 +1,25 @@
+{
+  "id": 1,
+  "workspaceId": 1,
+  "name": "dev",
+  "vars": [
+    {
+      "key": "baseUrl",
+      "value": "https://dev.payments.test",
+      "secret": false,
+      "enabled": true
+    },
+    {
+      "key": "apiKey",
+      "value": "dev-4f9a2c",
+      "secret": true,
+      "enabled": true
+    },
+    {
+      "key": "tenant",
+      "value": "acme",
+      "secret": false,
+      "enabled": false
+    }
+  ]
+}

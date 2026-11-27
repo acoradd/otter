@@ -2,23 +2,86 @@
   "app": {
     "name": "Otter"
   },
+  "common": {
+    "cancel": "Cancel",
+    "create": "Create",
+    "rename": "Rename",
+    "delete": "Delete",
+    "close": "Close",
+    "save": "Save",
+    "revert": "Revert",
+    "unsaved": "Unsaved changes",
+    "actions": "Actions",
+    "dismiss": "Dismiss"
+  },
   "window": {
     "minimise": "Minimise",
     "maximise": "Maximise",
     "restore": "Restore",
     "close": "Close"
   },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "languages": {
+      "system": "System",
+      "en": "English",
+      "fr": "Français"
+    },
+    "themes": {
+      "system": "System",
+      "light": "Light",
+      "dark": "Dark"
+    }
+  },
   "sidebar": {
+    "workspace": "Workspace",
+    "environment": "Environment",
+    "noEnvironment": "No environment",
+    "noRequests": "No requests yet",
     "noWorkspace": "No workspace yet"
+  },
+  "workspace": {
+    "create": "Create a workspace",
+    "new": "New workspace",
+    "rename": "Rename workspace",
+    "delete": "Delete workspace",
+    "namePlaceholder": "Workspace name",
+    "deleteConfirm": "Delete “{name}” and everything in it? This cannot be undone."
+  },
+  "environments": {
+    "title": "Environments",
+    "manage": "Manage environments",
+    "active": "Active",
+    "new": "New environment",
+    "namePlaceholder": "Environment name",
+    "deleteConfirm": "Delete “{name}” and its variables?",
+    "enabled": "Enabled",
+    "key": "Name",
+    "keyPlaceholder": "baseUrl",
+    "value": "Value",
+    "secret": "Secret",
+    "reveal": "Show value",
+    "hide": "Hide value",
+    "removeVar": "Remove variable",
+    "addVar": "Add variable",
+    "noVars": "No variables yet",
+    "none": "No environment yet. Create one to define variables such as baseUrl or token."
   },
   "home": {
     "title": "Welcome to Otter",
-    "subtitle": "Create a workspace or import a collection to get started.",
+    "subtitle": "Select a request in the sidebar, or create one.",
+    "noWorkspace": "Create a workspace to organise your requests.",
     "version": "Version {version}"
   },
   "errors": {
     "INTERNAL": "Something went wrong. Try again; if it persists, restart Otter.",
     "NOT_FOUND": "This item no longer exists.",
-    "INVALID_INPUT": "This value is not valid."
+    "INVALID_INPUT": "This value is not valid.",
+    "NAME_REQUIRED": "Enter a name.",
+    "INVALID_VAR_KEY": "“{key}” is not a valid variable name: use letters, digits, “_”, “.” and “-”, without spaces.",
+    "DB_NOT_OTTER": "This file is not an Otter database.",
+    "DB_TOO_NEW": "This database was written by a newer version of Otter."
   }
 }

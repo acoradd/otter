@@ -3,11 +3,16 @@
 package main
 
 import (
+	"context"
 	"embed"
 	"log"
+	"os"
+	"path/filepath"
 	"runtime"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
+
+	"github.com/acoradd/otter/src/internal/store"
 )
 
 //go:embed all:frontend/dist
@@ -16,12 +21,36 @@ var assets embed.FS
 // MainWindowName names the only window.
 const MainWindowName = "main"
 
+func init() {
+	application.RegisterEvent[Settings](EventSettingsChanged)
+	application.RegisterEvent[int64](EventWorkspacesChanged)
+	application.RegisterEvent[int64](EventEnvironmentChanged)
+}
+
 func main() {
+	dataDir, err := appDataDir()
+	if err != nil {
+		log.Fatal(err)
+	}
+	db, err := store.Open(context.Background(), filepath.Join(dataDir, store.FileName))
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	emit := func(name string, data any) {
+		if app := application.Get(); app != nil {
+			app.Event.Emit(name, data)
+		}
+	}
+
 	app := application.New(application.Options{
 		Name:        "Otter",
 		Description: "Lightweight HTTP client for large collections",
 		Services: []application.Service{
 			service(NewAppService()),
+			service(NewSettingsService(db, emit)),
+			service(NewWorkspaceService(db, emit)),
 		},
 		Assets: application.AssetOptions{
 			Handler: application.AssetFileServerFS(assets),
@@ -62,4 +91,14 @@ func main() {
 // always pick up the app-level MarshalError, so it is set per service too.
 func service[T any](instance *T) application.Service {
 	return application.NewServiceWithOptions(instance, application.ServiceOptions{MarshalError: marshalError})
+}
+
+// appDataDir is where otter.db lives: the user config folder (%AppData% on
+// Windows, ~/Library/Application Support on macOS, ~/.config on Linux).
+func appDataDir() (string, error) {
+	base, err := os.UserConfigDir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(base, "Otter"), nil
 }

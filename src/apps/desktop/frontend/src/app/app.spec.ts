@@ -2,15 +2,15 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 
-import { FakeBackend } from '../testing/backend';
 import { render, text } from '../testing/render';
+import { demoBackend } from '../testing/workspace';
 import { App } from './app';
 import { appConfig } from './app.config';
 import { TranslocoHttpLoader } from './core/transloco-loader';
 
 describe('App', () => {
   it('renders the main window', async () => {
-    new FakeBackend();
+    demoBackend();
     const fixture = await render(App);
     expect(text(fixture)).toContain('Welcome to Otter');
   });

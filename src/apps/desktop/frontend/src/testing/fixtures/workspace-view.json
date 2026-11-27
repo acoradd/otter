@@ -1,0 +1,19 @@
+{
+  "id": 1,
+  "name": "Payments API",
+  "activeEnvironmentId": 1,
+  "environments": [
+    {
+      "id": 1,
+      "name": "dev"
+    },
+    {
+      "id": 2,
+      "name": "staging"
+    },
+    {
+      "id": 3,
+      "name": "production"
+    }
+  ]
+}

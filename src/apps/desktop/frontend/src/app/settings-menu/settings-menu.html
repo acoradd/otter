@@ -1,0 +1,44 @@
+<ng-container *transloco="let t">
+  <button
+    type="button"
+    class="window-btn"
+    [class.on]="open()"
+    [attr.aria-label]="t('settings.title')"
+    [attr.title]="t('settings.title')"
+    [attr.aria-expanded]="open()"
+    (click)="open.set(!open())"
+  >
+    <svg viewBox="0 0 12 12" aria-hidden="true">
+      <circle cx="6" cy="6" r="1.7" />
+      <path
+        d="M6 .8v1.4M6 9.8v1.4M.8 6h1.4M9.8 6h1.4M2.3 2.3l1 1M8.7 8.7l1 1M2.3 9.7l1-1M8.7 3.3l1-1"
+      />
+    </svg>
+  </button>
+
+  @if (open()) {
+    <div class="backdrop" (click)="open.set(false)"></div>
+    <div class="menu" role="dialog" [attr.aria-label]="t('settings.title')">
+      <div class="field">
+        <span class="label">{{ t('settings.language') }}</span>
+        <div class="seg" role="group" [attr.aria-label]="t('settings.language')">
+          @for (l of languages; track l) {
+            <button type="button" [class.active]="language() === l" (click)="setLanguage(l)">
+              {{ t('settings.languages.' + (l || 'system')) }}
+            </button>
+          }
+        </div>
+      </div>
+      <div class="field">
+        <span class="label">{{ t('settings.theme') }}</span>
+        <div class="seg" role="group" [attr.aria-label]="t('settings.theme')">
+          @for (th of themes; track th) {
+            <button type="button" [class.active]="theme() === th" (click)="setTheme(th)">
+              {{ t('settings.themes.' + th) }}
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</ng-container>

@@ -1,22 +1,30 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, effect, inject } from '@angular/core';
 import { TranslocoService } from '@jsverse/transloco';
+
+import { AppSettings } from './settings.store';
 
 export const AVAILABLE_LANGUAGES = ['en', 'fr'] as const;
 export type Language = (typeof AVAILABLE_LANGUAGES)[number];
 export const DEFAULT_LANGUAGE: Language = 'en';
 
 /**
- * UI language, switched at runtime. It follows the system language until the
- * choice is stored by Go in the setting table (broadcast with settings.changed).
+ * UI language, switched at runtime. The choice is stored by Go (settings);
+ * an empty choice follows the system language.
  */
 @Injectable({ providedIn: 'root' })
 export class LanguageService {
   private readonly transloco = inject(TranslocoService);
+  private readonly settings = inject(AppSettings);
 
   readonly languages = AVAILABLE_LANGUAGES;
 
-  init(): void {
-    this.set(systemLanguage());
+  constructor() {
+    effect(() => this.set(this.settings.value()?.language || systemLanguage()));
+  }
+
+  async init(): Promise<void> {
+    const settings = await this.settings.load();
+    this.set(settings?.language || systemLanguage());
   }
 
   get active(): Language {

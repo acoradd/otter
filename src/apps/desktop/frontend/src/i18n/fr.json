@@ -2,23 +2,86 @@
   "app": {
     "name": "Otter"
   },
+  "common": {
+    "cancel": "Annuler",
+    "create": "Créer",
+    "rename": "Renommer",
+    "delete": "Supprimer",
+    "close": "Fermer",
+    "save": "Enregistrer",
+    "revert": "Annuler les modifications",
+    "unsaved": "Modifications non enregistrées",
+    "actions": "Actions",
+    "dismiss": "Fermer"
+  },
   "window": {
     "minimise": "Réduire",
     "maximise": "Agrandir",
     "restore": "Restaurer",
     "close": "Fermer"
   },
+  "settings": {
+    "title": "Réglages",
+    "language": "Langue",
+    "theme": "Thème",
+    "languages": {
+      "system": "Système",
+      "en": "English",
+      "fr": "Français"
+    },
+    "themes": {
+      "system": "Système",
+      "light": "Clair",
+      "dark": "Sombre"
+    }
+  },
   "sidebar": {
+    "workspace": "Espace de travail",
+    "environment": "Environnement",
+    "noEnvironment": "Aucun environnement",
+    "noRequests": "Aucune requête pour l’instant",
     "noWorkspace": "Aucun espace de travail"
+  },
+  "workspace": {
+    "create": "Créer un espace de travail",
+    "new": "Nouvel espace de travail",
+    "rename": "Renommer l’espace de travail",
+    "delete": "Supprimer l’espace de travail",
+    "namePlaceholder": "Nom de l’espace de travail",
+    "deleteConfirm": "Supprimer « {name} » et tout son contenu ? Cette action est définitive."
+  },
+  "environments": {
+    "title": "Environnements",
+    "manage": "Gérer les environnements",
+    "active": "Actif",
+    "new": "Nouvel environnement",
+    "namePlaceholder": "Nom de l’environnement",
+    "deleteConfirm": "Supprimer « {name} » et ses variables ?",
+    "enabled": "Active",
+    "key": "Nom",
+    "keyPlaceholder": "baseUrl",
+    "value": "Valeur",
+    "secret": "Secret",
+    "reveal": "Afficher la valeur",
+    "hide": "Masquer la valeur",
+    "removeVar": "Supprimer la variable",
+    "addVar": "Ajouter une variable",
+    "noVars": "Aucune variable pour l’instant",
+    "none": "Aucun environnement. Créez-en un pour définir des variables comme baseUrl ou token."
   },
   "home": {
     "title": "Bienvenue dans Otter",
-    "subtitle": "Créez un espace de travail ou importez une collection pour commencer.",
+    "subtitle": "Sélectionnez une requête dans la barre latérale, ou créez-en une.",
+    "noWorkspace": "Créez un espace de travail pour organiser vos requêtes.",
     "version": "Version {version}"
   },
   "errors": {
     "INTERNAL": "Une erreur est survenue. Réessayez ; si elle persiste, redémarrez Otter.",
     "NOT_FOUND": "Cet élément n’existe plus.",
-    "INVALID_INPUT": "Cette valeur n'est pas valide."
+    "INVALID_INPUT": "Cette valeur n’est pas valide.",
+    "NAME_REQUIRED": "Saisissez un nom.",
+    "INVALID_VAR_KEY": "« {key} » n’est pas un nom de variable valide : utilisez des lettres, des chiffres, « _ », « . » et « - », sans espace.",
+    "DB_NOT_OTTER": "Ce fichier n’est pas une base Otter.",
+    "DB_TOO_NEW": "Cette base a été écrite par une version plus récente d’Otter."
   }
 }

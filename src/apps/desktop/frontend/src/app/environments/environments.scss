@@ -1,0 +1,123 @@
+@use 'mixins' as *;
+
+:host {
+  @include stack(var(--space-4));
+  width: 100%;
+  max-width: 1100px;
+  padding: var(--space-6);
+}
+
+.head,
+.editor-head,
+.actions,
+.confirm {
+  @include row(var(--space-2));
+}
+
+.head {
+  justify-content: space-between;
+
+  h1 {
+    margin: 0;
+  }
+}
+
+.editor-head h2 {
+  @include ellipsis;
+  margin: 0 auto 0 0;
+  font-size: var(--text-lg);
+  font-weight: 600;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.list {
+  @include stack(var(--space-1));
+}
+
+.list-item {
+  @include row(var(--space-2));
+  justify-content: space-between;
+  padding: var(--space-2) var(--space-3);
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+
+  .name {
+    @include ellipsis;
+  }
+
+  &:hover {
+    background: var(--color-hover);
+  }
+
+  &.active {
+    background: var(--color-surface-2);
+    font-weight: 600;
+  }
+}
+
+.editor {
+  @include stack(var(--space-3));
+}
+
+.vars {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+
+  th {
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-align: left;
+  }
+
+  td {
+    padding: 2px var(--space-1);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .input {
+    width: 100%;
+  }
+
+  tr.disabled .input {
+    opacity: 0.55;
+  }
+}
+
+.col-check {
+  width: 32px;
+  text-align: center;
+}
+
+.col-secret {
+  width: 84px;
+  text-align: center !important;
+}
+
+.col-actions {
+  width: 40px;
+}
+
+.value {
+  @include row(var(--space-1));
+}
+
+.spacer {
+  flex: 1;
+}
+
+.unsaved {
+  font-size: var(--text-sm);
+  color: var(--color-warning);
+}

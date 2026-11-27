@@ -5,8 +5,9 @@
       <span class="brand-name">{{ t('app.name') }}</span>
     </div>
 
-    @if (!isMac) {
-      <div class="window-buttons">
+    <div class="window-buttons">
+      <app-settings-menu />
+      @if (!isMac) {
         <button
           type="button"
           class="window-btn"
@@ -38,22 +39,56 @@
         >
           <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 1l8 8M9 1l-8 8" /></svg>
         </button>
-      </div>
-    }
+      }
+    </div>
   </header>
+
+  @if (store.error(); as error) {
+    <div class="alert app-error" role="alert">
+      <span>{{ t(errorKey(error.code), error.params ?? {}) }}</span>
+      <button
+        type="button"
+        class="icon-btn"
+        [attr.aria-label]="t('common.dismiss')"
+        (click)="store.error.set(null)"
+      >
+        <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8" /></svg>
+      </button>
+    </div>
+  }
 
   <div class="body">
     <aside class="sidebar">
-      <p class="empty">{{ t('sidebar.noWorkspace') }}</p>
+      <app-sidebar (manageEnvironments)="panel.set('environments')" />
     </aside>
     <main class="content">
-      <div class="empty">
-        <h1>{{ t('home.title') }}</h1>
-        <p>{{ t('home.subtitle') }}</p>
-        @if (version()) {
-          <p class="version">{{ t('home.version', { version: version() }) }}</p>
-        }
-      </div>
+      @if (store.view() && panel() === 'environments') {
+        <app-environments (closed)="panel.set('home')" />
+      } @else {
+        <div class="empty welcome">
+          <h1>{{ t('home.title') }}</h1>
+          @if (store.loaded() && !store.workspaces().length) {
+            <p>{{ t('home.noWorkspace') }}</p>
+            @if (creating()) {
+              <app-name-form
+                [label]="t('workspace.namePlaceholder')"
+                [submitLabel]="t('common.create')"
+                (submitted)="createWorkspace($event)"
+                (cancelled)="creating.set(false)"
+              />
+            } @else {
+              <button type="button" class="btn primary" (click)="creating.set(true)">
+                {{ t('workspace.create') }}
+              </button>
+            }
+          } @else {
+            <p>{{ t('home.subtitle') }}</p>
+          }
+          @if (version()) {
+            <p class="version">{{ t('home.version', { version: version() }) }}</p>
+          }
+        </div>
+      }
     </main>
   </div>
 </ng-container>

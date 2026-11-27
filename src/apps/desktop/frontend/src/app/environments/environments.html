@@ -1,0 +1,191 @@
+<ng-container *transloco="let t">
+  <header class="head">
+    <h1>{{ t('environments.title') }}</h1>
+    <button type="button" class="btn" (click)="closed.emit()">{{ t('common.close') }}</button>
+  </header>
+
+  <div class="layout">
+    <nav class="list" [attr.aria-label]="t('environments.title')">
+      @for (e of environments(); track e.id) {
+        <button
+          type="button"
+          class="list-item"
+          [class.active]="e.id === selectedId()"
+          (click)="select(e.id)"
+        >
+          <span class="name">{{ e.name }}</span>
+          @if (e.id === store.view()?.activeEnvironmentId) {
+            <span class="pill">{{ t('environments.active') }}</span>
+          }
+        </button>
+      }
+      @if (mode() === 'create') {
+        <app-name-form
+          [label]="t('environments.namePlaceholder')"
+          [submitLabel]="t('common.create')"
+          (submitted)="create($event)"
+          (cancelled)="mode.set('idle')"
+        />
+      } @else {
+        <button type="button" class="btn" (click)="mode.set('create')">
+          {{ t('environments.new') }}
+        </button>
+      }
+    </nav>
+
+    <section class="editor">
+      @if (env(); as e) {
+        <div class="editor-head">
+          @switch (mode()) {
+            @case ('rename') {
+              <app-name-form
+                [label]="t('environments.namePlaceholder')"
+                [submitLabel]="t('common.rename')"
+                [value]="e.name"
+                (submitted)="rename($event)"
+                (cancelled)="mode.set('idle')"
+              />
+            }
+            @case ('delete') {
+              <div class="confirm" role="alertdialog">
+                <span>{{ t('environments.deleteConfirm', { name: e.name }) }}</span>
+                <button type="button" class="btn danger" (click)="delete()">
+                  {{ t('common.delete') }}
+                </button>
+                <button type="button" class="btn" (click)="mode.set('idle')">
+                  {{ t('common.cancel') }}
+                </button>
+              </div>
+            }
+            @default {
+              <h2>{{ e.name }}</h2>
+              <button type="button" class="btn" (click)="mode.set('rename')">
+                {{ t('common.rename') }}
+              </button>
+              <button type="button" class="btn" (click)="mode.set('delete')">
+                {{ t('common.delete') }}
+              </button>
+            }
+          }
+        </div>
+
+        <table class="vars">
+          <thead>
+            <tr>
+              <th class="col-check">
+                <span class="sr-only">{{ t('environments.enabled') }}</span>
+              </th>
+              <th>{{ t('environments.key') }}</th>
+              <th>{{ t('environments.value') }}</th>
+              <th class="col-secret">{{ t('environments.secret') }}</th>
+              <th class="col-actions">
+                <span class="sr-only">{{ t('common.actions') }}</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of rows(); track row.uid) {
+              <tr [class.disabled]="!row.enabled">
+                <td class="col-check">
+                  <input
+                    type="checkbox"
+                    [checked]="row.enabled"
+                    [attr.aria-label]="t('environments.enabled')"
+                    (change)="edit(row.uid, { enabled: $any($event.target).checked })"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="input mono"
+                    [value]="row.key"
+                    [attr.aria-label]="t('environments.key')"
+                    [placeholder]="t('environments.keyPlaceholder')"
+                    (input)="edit(row.uid, { key: $any($event.target).value })"
+                  />
+                </td>
+                <td>
+                  <div class="value">
+                    <input
+                      class="input mono"
+                      [type]="row.secret && !revealed().has(row.uid) ? 'password' : 'text'"
+                      [value]="row.value"
+                      [attr.aria-label]="t('environments.value')"
+                      (input)="edit(row.uid, { value: $any($event.target).value })"
+                    />
+                    @if (row.secret) {
+                      <button
+                        type="button"
+                        class="icon-btn"
+                        [attr.aria-label]="
+                          t(revealed().has(row.uid) ? 'environments.hide' : 'environments.reveal')
+                        "
+                        [attr.title]="
+                          t(revealed().has(row.uid) ? 'environments.hide' : 'environments.reveal')
+                        "
+                        (click)="toggleReveal(row.uid)"
+                      >
+                        <svg viewBox="0 0 12 12" aria-hidden="true">
+                          <path d="M1 6s1.8-3.5 5-3.5S11 6 11 6 9.2 9.5 6 9.5 1 6 1 6z" />
+                          <circle cx="6" cy="6" r="1.5" />
+                        </svg>
+                      </button>
+                    }
+                  </div>
+                </td>
+                <td class="col-secret">
+                  <input
+                    type="checkbox"
+                    [checked]="row.secret"
+                    [attr.aria-label]="t('environments.secret')"
+                    (change)="edit(row.uid, { secret: $any($event.target).checked })"
+                  />
+                </td>
+                <td class="col-actions">
+                  <button
+                    type="button"
+                    class="icon-btn"
+                    [attr.aria-label]="t('environments.removeVar')"
+                    [attr.title]="t('environments.removeVar')"
+                    (click)="removeRow(row.uid)"
+                  >
+                    <svg viewBox="0 0 12 12" aria-hidden="true">
+                      <path d="M2 2l8 8M10 2l-8 8" />
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="empty">{{ t('environments.noVars') }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+
+        @if (saveError(); as err) {
+          <div class="alert" role="alert">{{ t(errorKey(err.code), err.params ?? {}) }}</div>
+        }
+
+        <div class="actions">
+          <button type="button" class="btn" (click)="addRow()">
+            {{ t('environments.addVar') }}
+          </button>
+          <span class="spacer"></span>
+          @if (dirty()) {
+            <span class="unsaved">{{ t('common.unsaved') }}</span>
+          }
+          <button type="button" class="btn" [disabled]="!dirty()" (click)="revert()">
+            {{ t('common.revert') }}
+          </button>
+          <button type="button" class="btn primary" [disabled]="!dirty()" (click)="save()">
+            {{ t('common.save') }}
+          </button>
+        </div>
+      } @else if (!environments().length) {
+        <div class="empty">
+          <p>{{ t('environments.none') }}</p>
+        </div>
+      }
+    </section>
+  </div>
+</ng-container>

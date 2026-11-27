@@ -1,0 +1,124 @@
+<ng-container *transloco="let t">
+  @if (store.workspaces().length) {
+    <section class="block">
+      <label class="label" for="workspace">{{ t('sidebar.workspace') }}</label>
+      @switch (mode()) {
+        @case ('create') {
+          <app-name-form
+            [label]="t('workspace.namePlaceholder')"
+            [submitLabel]="t('common.create')"
+            (submitted)="create($event)"
+            (cancelled)="mode.set('idle')"
+          />
+        }
+        @case ('rename') {
+          <app-name-form
+            [label]="t('workspace.namePlaceholder')"
+            [submitLabel]="t('common.rename')"
+            [value]="currentName()"
+            (submitted)="rename($event)"
+            (cancelled)="mode.set('idle')"
+          />
+        }
+        @case ('delete') {
+          <div class="confirm" role="alertdialog">
+            <p>{{ t('workspace.deleteConfirm', { name: currentName() }) }}</p>
+            <div class="row">
+              <button type="button" class="btn danger" (click)="delete()">
+                {{ t('common.delete') }}
+              </button>
+              <button type="button" class="btn" (click)="mode.set('idle')">
+                {{ t('common.cancel') }}
+              </button>
+            </div>
+          </div>
+        }
+        @default {
+          <div class="row">
+            <select
+              id="workspace"
+              class="input grow"
+              [value]="store.currentId()"
+              (change)="openWorkspace($any($event.target).value)"
+            >
+              @for (w of store.workspaces(); track w.id) {
+                <option [value]="w.id" [selected]="w.id === store.currentId()">{{ w.name }}</option>
+              }
+            </select>
+            <button
+              type="button"
+              class="icon-btn"
+              [attr.aria-label]="t('workspace.new')"
+              [attr.title]="t('workspace.new')"
+              (click)="mode.set('create')"
+            >
+              <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1v10M1 6h10" /></svg>
+            </button>
+            <button
+              type="button"
+              class="icon-btn"
+              [attr.aria-label]="t('workspace.rename')"
+              [attr.title]="t('workspace.rename')"
+              (click)="mode.set('rename')"
+            >
+              <svg viewBox="0 0 12 12" aria-hidden="true">
+                <path d="M8 1.5l2.5 2.5L4 10.5H1.5V8z" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="icon-btn"
+              [attr.aria-label]="t('workspace.delete')"
+              [attr.title]="t('workspace.delete')"
+              (click)="mode.set('delete')"
+            >
+              <svg viewBox="0 0 12 12" aria-hidden="true">
+                <path d="M2 3h8M4.5 3V1.5h3V3M3 3l.5 7.5h5L9 3" />
+              </svg>
+            </button>
+          </div>
+        }
+      }
+    </section>
+
+    @if (view(); as v) {
+      <section class="block">
+        <label class="label" for="environment">{{ t('sidebar.environment') }}</label>
+        <div class="row">
+          <select
+            id="environment"
+            class="input grow"
+            [value]="v.activeEnvironmentId"
+            (change)="setEnvironment($any($event.target).value)"
+          >
+            <option value="0" [selected]="v.activeEnvironmentId === 0">
+              {{ t('sidebar.noEnvironment') }}
+            </option>
+            @for (e of v.environments; track e.id) {
+              <option [value]="e.id" [selected]="e.id === v.activeEnvironmentId">
+                {{ e.name }}
+              </option>
+            }
+          </select>
+          <button
+            type="button"
+            class="icon-btn"
+            [attr.aria-label]="t('environments.manage')"
+            [attr.title]="t('environments.manage')"
+            (click)="manageEnvironments.emit()"
+          >
+            <svg viewBox="0 0 12 12" aria-hidden="true">
+              <path d="M1.5 3h9M1.5 6h9M1.5 9h9M4 1.8v2.4M8 4.8v2.4M5 7.8v2.4" />
+            </svg>
+          </button>
+        </div>
+      </section>
+
+      <section class="block tree">
+        <p class="empty">{{ t('sidebar.noRequests') }}</p>
+      </section>
+    }
+  } @else if (store.loaded()) {
+    <p class="empty">{{ t('sidebar.noWorkspace') }}</p>
+  }
+</ng-container>

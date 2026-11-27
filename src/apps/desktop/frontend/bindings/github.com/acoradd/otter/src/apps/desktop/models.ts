@@ -10,3 +10,73 @@ export interface AppInfo {
      */
     "version": string;
 }
+
+/**
+ * EnvVarRow is a row of the environment editor.
+ */
+export interface EnvVarRow {
+    "key": string;
+    "value": string;
+    "secret": boolean;
+    "enabled": boolean;
+}
+
+/**
+ * EnvironmentItem is an environment in the environment selector.
+ */
+export interface EnvironmentItem {
+    "id": number;
+    "name": string;
+}
+
+/**
+ * EnvironmentView is the environment editor.
+ */
+export interface EnvironmentView {
+    "id": number;
+    "workspaceId": number;
+    "name": string;
+    "vars": EnvVarRow[] | null;
+}
+
+/**
+ * Settings are the app's preferences, stored in otter.db.
+ */
+export interface Settings {
+    /**
+     * Language is "en" or "fr", or "" to follow the system.
+     */
+    "language": string;
+
+    /**
+     * Theme is "system", "light" or "dark".
+     */
+    "theme": string;
+
+    /**
+     * LastWorkspaceID is the workspace shown at start, 0 when none was chosen.
+     */
+    "lastWorkspaceId": number;
+}
+
+/**
+ * WorkspaceItem is a workspace in the workspace selector.
+ */
+export interface WorkspaceItem {
+    "id": number;
+    "name": string;
+}
+
+/**
+ * WorkspaceView is what the sidebar shows of the open workspace.
+ */
+export interface WorkspaceView {
+    "id": number;
+    "name": string;
+
+    /**
+     * ActiveEnvironmentID is 0 when no environment is active.
+     */
+    "activeEnvironmentId": number;
+    "environments": EnvironmentItem[] | null;
+}
