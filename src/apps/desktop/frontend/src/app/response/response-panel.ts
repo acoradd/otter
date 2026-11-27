@@ -13,6 +13,7 @@ import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { CodeEditor, CodeLanguage } from '../code-editor/code-editor';
 import { errorKey } from '../core/error-key';
 import { formatBytes, formatDateTime, formatDuration, prettyJson } from '../core/format';
+import { prettyMarkup } from '../core/markup';
 import { SendStore } from '../core/send.store';
 
 type Section = 'body' | 'headers' | 'sent' | 'redirects' | 'history';
@@ -40,16 +41,31 @@ export class ResponsePanel {
     const t = this.response()?.contentType ?? '';
     return t.includes('json')
       ? 'json'
-      : t.includes('xml') || t.includes('html')
-        ? 'xml'
-        : 'plaintext';
+      : t.includes('html')
+        ? 'html'
+        : t.includes('xml')
+          ? 'xml'
+          : 'plaintext';
   });
+  /** JSON, XML and HTML can be shown indented. */
+  protected readonly formattable = computed(() => this.language() !== 'plaintext');
   protected readonly body = computed(() => {
     const r = this.response();
     if (!r || r.bodyKind !== 'text') {
       return '';
     }
-    return this.pretty() && this.language() === 'json' ? prettyJson(r.body) : r.body;
+    if (!this.pretty()) {
+      return r.body;
+    }
+    switch (this.language()) {
+      case 'json':
+        return prettyJson(r.body);
+      case 'html':
+        return prettyMarkup(r.body, true);
+      case 'xml':
+        return prettyMarkup(r.body, false);
+    }
+    return r.body;
   });
 
   constructor() {

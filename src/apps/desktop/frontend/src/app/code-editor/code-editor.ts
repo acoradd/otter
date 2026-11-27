@@ -20,7 +20,7 @@ import { VarMap } from '../core/preview.store';
 import { AppSettings } from '../core/settings.store';
 import { describeVar } from '../core/source-label';
 
-export type CodeLanguage = 'json' | 'xml' | 'plaintext' | 'javascript';
+export type CodeLanguage = 'json' | 'xml' | 'html' | 'plaintext' | 'javascript';
 
 /** {{name}}, as Go reads it. */
 const PLACEHOLDER = /\{\{\s*([\w.-]+)\s*\}\}/g;
@@ -119,6 +119,8 @@ export class CodeEditor {
   readonly value = input('');
   readonly language = input<CodeLanguage>('plaintext');
   readonly readOnly = input(false);
+  /** Long lines wrap instead of scrolling sideways. */
+  readonly wrap = input(false);
   readonly label = input('');
   /** Variables of the preview: {{name}} is highlighted (red when undefined) and hovered. */
   readonly vars = input<VarMap | null>(null);
@@ -201,6 +203,7 @@ export class CodeEditor {
       value: this.value(),
       language: this.language(),
       readOnly: this.readOnly(),
+      wordWrap: this.wrap() ? 'on' : 'off',
       automaticLayout: true,
       minimap: { enabled: false },
       scrollBeyondLastLine: false,

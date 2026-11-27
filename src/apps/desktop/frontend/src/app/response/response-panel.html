@@ -94,7 +94,7 @@
           @switch (r.bodyKind) {
             @case ('text') {
               <div class="body-bar">
-                @if (language() === 'json') {
+                @if (formattable()) {
                   <div class="seg small">
                     <button type="button" [class.active]="pretty()" (click)="pretty.set(true)">
                       {{ t('response.pretty') }}
@@ -116,6 +116,7 @@
                 [value]="body()"
                 [language]="language()"
                 [readOnly]="true"
+                [wrap]="true"
                 [label]="t('response.body')"
               />
             }

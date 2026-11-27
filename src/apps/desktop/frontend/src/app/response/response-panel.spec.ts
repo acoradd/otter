@@ -50,6 +50,34 @@ describe('Sending', () => {
     expect(body()).toBe(fixtures.responseView().body);
   });
 
+  it('indents an HTML body, and shows it raw on demand', async () => {
+    const html = '<html><head><title>Otter</title></head><body><p>Hi</p></body></html>';
+    demoBackend().on('SendService.SendRequest', {
+      ...fixtures.responseView(),
+      contentType: 'text/html',
+      body: html,
+    });
+    const fixture = await openRequest();
+    await click(fixture, 'Send', 'app-request-editor .send');
+
+    const body = () =>
+      (find(fixture, 'app-response-panel app-code-editor textarea') as HTMLTextAreaElement).value;
+    expect(body()).toBe(
+      [
+        '<html>',
+        '  <head>',
+        '    <title>Otter</title>',
+        '  </head>',
+        '  <body>',
+        '    <p>Hi</p>',
+        '  </body>',
+        '</html>',
+      ].join('\n'),
+    );
+    await click(fixture, 'Raw', 'app-response-panel .seg button');
+    expect(body()).toBe(html);
+  });
+
   it('sends with Ctrl+Enter, and cancels while it runs', async () => {
     let answer!: (v: ResponseView) => void;
     const backend = demoBackend().on(
