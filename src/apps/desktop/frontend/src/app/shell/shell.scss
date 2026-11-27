@@ -65,7 +65,15 @@
   flex: 1;
   min-width: 0;
   display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.panel {
+  display: flex;
   justify-content: center;
+  flex: 1;
+  min-height: 0;
   overflow: auto;
 }
 

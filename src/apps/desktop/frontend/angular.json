@@ -42,7 +42,12 @@
               "@fontsource/inter/700.css",
               "@fontsource/jetbrains-mono/400.css",
               "@fontsource/jetbrains-mono/600.css",
-              "src/styles.scss"
+              "src/styles.scss",
+              {
+                "input": "node_modules/monaco-editor/min/vs/editor/editor.main.css",
+                "bundleName": "monaco",
+                "inject": false
+              }
             ],
             "stylePreprocessorOptions": {
               "includePaths": [
@@ -55,7 +60,11 @@
             },
             "allowedCommonJsDependencies": [
               "@messageformat/core"
-            ]
+            ],
+            "webWorkerTsConfig": "tsconfig.worker.json",
+            "loader": {
+              ".ttf": "file"
+            }
           },
           "configurations": {
             "production": {

@@ -1,0 +1,25 @@
+{
+  "id": 1,
+  "workspaceId": 1,
+  "name": "customers",
+  "path": [
+    "customers"
+  ],
+  "draft": {
+    "vars": [
+      {
+        "key": "resource",
+        "value": "customers",
+        "enabled": true
+      }
+    ],
+    "headers": [
+      {
+        "key": "Authorization",
+        "value": "Bearer {{apiKey}}",
+        "ignore": false,
+        "enabled": true
+      }
+    ]
+  }
+}

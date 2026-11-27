@@ -1,0 +1,57 @@
+{
+  "id": 2,
+  "workspaceId": 1,
+  "folderId": 1,
+  "name": "Create customer",
+  "path": [
+    "customers"
+  ],
+  "draft": {
+    "method": "POST",
+    "url": "{{baseUrl}}/v1/customers?expand=cards",
+    "bodyType": "json",
+    "body": "{\n  \"name\": \"Ada Lovelace\",\n  \"email\": \"ada@example.test\"\n}",
+    "bodyFile": "",
+    "postScript": "bru.setVar(\"customerId\", res.body.id);",
+    "encodeUrl": true,
+    "followRedirects": true,
+    "maxRedirects": 10,
+    "timeoutMs": 30000,
+    "vars": [
+      {
+        "key": "locale",
+        "value": "en-GB",
+        "enabled": true
+      }
+    ],
+    "headers": [
+      {
+        "key": "Idempotency-Key",
+        "value": "{{requestId}}",
+        "ignore": false,
+        "enabled": true
+      },
+      {
+        "key": "X-Debug",
+        "value": "1",
+        "ignore": false,
+        "enabled": false
+      },
+      {
+        "key": "Accept-Encoding",
+        "value": "",
+        "ignore": true,
+        "enabled": true
+      }
+    ],
+    "bodyFields": [
+      {
+        "key": "name",
+        "file": false,
+        "value": "Ada Lovelace",
+        "contentType": "",
+        "enabled": true
+      }
+    ]
+  }
+}

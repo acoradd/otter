@@ -1,6 +1,8 @@
 import {
   EnvironmentView,
   FolderChoice,
+  FolderView,
+  RequestView,
   Settings,
   TreeNode,
   WorkspaceItem,
@@ -11,6 +13,8 @@ import { FakeBackend } from './backend';
 import appInfo from './fixtures/app-info.json';
 import environmentView from './fixtures/environment-view.json';
 import folderChoices from './fixtures/folder-choices.json';
+import folderView from './fixtures/folder-view.json';
+import requestView from './fixtures/request-view.json';
 import settings from './fixtures/settings.json';
 import treeCards from './fixtures/tree-cards.json';
 import treeCustomers from './fixtures/tree-customers.json';
@@ -32,6 +36,10 @@ export const fixtures = {
       [4, structuredClone(treeCards) as TreeNode[]],
     ]),
   folderChoices: (): FolderChoice[] => structuredClone(folderChoices),
+  /** "Create customer" (request 2) in customers, filled in. */
+  requestView: (): RequestView => structuredClone(requestView),
+  /** customers (folder 1), with a variable and an Authorization header. */
+  folderView: (): FolderView => structuredClone(folderView),
 };
 
 /** Go with the demo workspace open ("Payments API", environment dev active). */
@@ -44,7 +52,9 @@ export function demoBackend(): FakeBackend {
     .on('WorkspaceService.GetWorkspaceView', fixtures.workspaceView())
     .on('WorkspaceService.GetEnvironmentView', fixtures.environmentView())
     .on('TreeService.GetChildren', (_ws: number, folder: number) => tree.get(folder) ?? [])
-    .on('TreeService.GetFolderChoices', fixtures.folderChoices());
+    .on('TreeService.GetFolderChoices', fixtures.folderChoices())
+    .on('EditorService.GetRequestView', fixtures.requestView())
+    .on('EditorService.GetFolderView', fixtures.folderView());
 }
 
 /** Go with no workspace yet. */

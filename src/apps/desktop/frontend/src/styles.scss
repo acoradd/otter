@@ -50,6 +50,7 @@
 }
 
 @mixin dark {
+  color-scheme: dark;
   --color-bg: #0f1216;
   --color-surface: #151920;
   --color-surface-2: #1e232b;
@@ -68,6 +69,10 @@
   --method-put: #6aa8f0;
   --method-patch: #b9a3f0;
   --method-delete: #f2a3a3;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -178,6 +183,31 @@ pre {
   &.mono {
     font-family: var(--font-mono);
     font-size: var(--text-sm);
+  }
+}
+
+// Selects drawn by us, not by the OS: WebKitGTK, WebView2 and WKWebView
+// otherwise each paint them their own way, ignoring the theme.
+// :where keeps it below the colour classes (.method-get…).
+:where(select.input) {
+  color: var(--color-text);
+}
+
+select.input {
+  appearance: none;
+  padding-right: 26px;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--color-text-muted) 50%),
+    linear-gradient(135deg, var(--color-text-muted) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 50%,
+    calc(100% - 10px) 50%;
+  background-size: 4px 4px;
+  background-repeat: no-repeat;
+
+  option {
+    background: var(--color-surface);
+    color: var(--color-text);
   }
 }
 
@@ -398,4 +428,48 @@ input[type='checkbox'] {
   display: flex;
   justify-content: flex-end;
   gap: var(--space-2);
+}
+
+// An editable table of rows (headers, variables, body fields).
+.grid-table {
+  width: 100%;
+  max-width: 1100px;
+  border-collapse: collapse;
+  table-layout: fixed;
+
+  th {
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-align: left;
+  }
+
+  td {
+    padding: 2px var(--space-1);
+    border-top: 1px solid var(--color-border);
+    vertical-align: middle;
+  }
+
+  .input {
+    width: 100%;
+  }
+
+  tr.disabled .input {
+    opacity: 0.55;
+  }
+
+  .col-check {
+    width: 32px;
+    text-align: center;
+  }
+
+  .col-actions {
+    width: 40px;
+  }
+}
+
+.pill.muted {
+  background: var(--color-surface-2);
+  color: var(--color-text-muted);
 }

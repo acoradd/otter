@@ -12,6 +12,18 @@ export interface AppInfo {
 }
 
 /**
+ * BodyFieldRow is a field of a form URL-encoded or multipart body. A file
+ * field (multipart only) holds a file path in Value.
+ */
+export interface BodyFieldRow {
+    "key": string;
+    "file": boolean;
+    "value": string;
+    "contentType": string;
+    "enabled": boolean;
+}
+
+/**
  * EnvVarRow is a row of the environment editor.
  */
 export interface EnvVarRow {
@@ -48,6 +60,40 @@ export interface FolderChoice {
 }
 
 /**
+ * FolderDraft is what the folder editor saves.
+ */
+export interface FolderDraft {
+    "vars": VarRow[] | null;
+    "headers": HeaderRow[] | null;
+}
+
+/**
+ * FolderView is the folder editor.
+ */
+export interface FolderView {
+    "id": number;
+    "workspaceId": number;
+    "name": string;
+
+    /**
+     * Path is the names of the folders from the root down to this one.
+     */
+    "path": string[] | null;
+    "draft": FolderDraft;
+}
+
+/**
+ * HeaderRow is a header row of a request or a folder. Ignore removes the
+ * inherited header of that name instead of setting it.
+ */
+export interface HeaderRow {
+    "key": string;
+    "value": string;
+    "ignore": boolean;
+    "enabled": boolean;
+}
+
+/**
  * NodeKind tells a folder from a request.
  */
 export enum NodeKind {
@@ -59,6 +105,45 @@ export enum NodeKind {
     NodeFolder = "folder",
     NodeRequest = "request",
 };
+
+/**
+ * RequestDraft is what the request editor saves.
+ */
+export interface RequestDraft {
+    "method": string;
+    "url": string;
+
+    /**
+     * BodyType is none, json, xml, text, form-urlencoded, multipart or binary.
+     */
+    "bodyType": string;
+    "body": string;
+    "bodyFile": string;
+    "postScript": string;
+    "encodeUrl": boolean;
+    "followRedirects": boolean;
+    "maxRedirects": number;
+    "timeoutMs": number;
+    "vars": VarRow[] | null;
+    "headers": HeaderRow[] | null;
+    "bodyFields": BodyFieldRow[] | null;
+}
+
+/**
+ * RequestView is the request editor: the request and where it sits.
+ */
+export interface RequestView {
+    "id": number;
+    "workspaceId": number;
+    "folderId": number;
+    "name": string;
+
+    /**
+     * Path is the names of the folders from the root down to the request's.
+     */
+    "path": string[] | null;
+    "draft": RequestDraft;
+}
 
 /**
  * Settings are the app's preferences, stored in otter.db.
@@ -109,6 +194,15 @@ export interface TreeNode {
      * HasChildren: a folder that can be expanded.
      */
     "hasChildren": boolean;
+}
+
+/**
+ * VarRow is a variable row of a request or a folder.
+ */
+export interface VarRow {
+    "key": string;
+    "value": string;
+    "enabled": boolean;
 }
 
 /**

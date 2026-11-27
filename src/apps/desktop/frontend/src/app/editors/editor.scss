@@ -1,0 +1,159 @@
+@use 'mixins' as *;
+
+:host {
+  @include stack(var(--space-3));
+  flex: 1;
+  min-height: 0;
+  padding: var(--space-4) var(--space-6);
+}
+
+.crumbs {
+  @include ellipsis;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+
+  .sep {
+    margin: 0 var(--space-1);
+  }
+
+  strong {
+    color: var(--color-text);
+    font-weight: 600;
+  }
+}
+
+.urlbar {
+  display: flex;
+  gap: var(--space-2);
+
+  .input {
+    height: 34px;
+  }
+}
+
+.method-select {
+  flex: none;
+  width: 112px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+}
+
+.url {
+  flex: 1;
+  min-width: 0;
+}
+
+.subtabs {
+  display: flex;
+  gap: var(--space-1);
+  border-bottom: 1px solid var(--color-border);
+
+  button {
+    @include row(var(--space-1));
+    padding: var(--space-2) var(--space-3);
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    cursor: pointer;
+
+    &.active {
+      border-bottom-color: var(--color-accent);
+      color: var(--color-text);
+      font-weight: 600;
+    }
+  }
+
+  .count {
+    padding: 0 6px;
+    border-radius: 999px;
+    background: var(--color-surface-2);
+    font-size: var(--text-xs);
+    font-weight: 500;
+  }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-accent);
+  }
+}
+
+.section {
+  @include stack(var(--space-3));
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.body-types {
+  align-self: flex-start;
+  flex-wrap: wrap;
+}
+
+.code {
+  flex: 1;
+  min-height: 220px;
+}
+
+.file-row {
+  display: flex;
+  gap: var(--space-2);
+  max-width: 720px;
+
+  .input {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+.hint {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.settings {
+  @include stack(var(--space-3));
+  max-width: 520px;
+
+  .check {
+    display: flex;
+    gap: var(--space-2);
+    align-items: flex-start;
+
+    small {
+      display: block;
+      color: var(--color-text-muted);
+    }
+  }
+
+  .field {
+    @include stack(var(--space-1));
+
+    .input {
+      width: 160px;
+    }
+  }
+}
+
+.footer {
+  @include row(var(--space-2));
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-border);
+
+  .alert {
+    margin: 0;
+  }
+}
+
+.spacer {
+  flex: 1;
+}
+
+.unsaved {
+  font-size: var(--text-sm);
+  color: var(--color-warning);
+}

@@ -1,0 +1,245 @@
+<ng-container *transloco="let t">
+  <div class="crumbs" [attr.title]="tab().path.join(' › ')">
+    @for (p of tab().path; track $index) {
+      <span>{{ p }}</span><span class="sep">›</span>
+    }
+    <strong>{{ tab().name }}</strong>
+  </div>
+
+  <div class="urlbar">
+    <select
+      class="input method-select"
+      [class]="'input method-select method-' + draft().method.toLowerCase()"
+      [attr.aria-label]="t('editor.method')"
+      (change)="edit({ method: $any($event.target).value })"
+    >
+      @for (m of methods(); track m) {
+        <option [value]="m" [selected]="m === draft().method">{{ m }}</option>
+      }
+    </select>
+    <input
+      class="input mono url"
+      [value]="draft().url"
+      [placeholder]="urlPlaceholder"
+      [attr.aria-label]="t('editor.url')"
+      spellcheck="false"
+      (input)="edit({ url: $any($event.target).value })"
+    />
+  </div>
+
+  <nav class="subtabs" role="tablist">
+    <button
+      type="button"
+      role="tab"
+      [class.active]="section() === 'headers'"
+      [attr.aria-selected]="section() === 'headers'"
+      (click)="section.set('headers')"
+    >
+      {{ t('editor.headers') }}
+      @if (counts().headers) {
+        <span class="count">{{ counts().headers }}</span>
+      }
+    </button>
+    <button
+      type="button"
+      role="tab"
+      [class.active]="section() === 'vars'"
+      [attr.aria-selected]="section() === 'vars'"
+      (click)="section.set('vars')"
+    >
+      {{ t('editor.variables') }}
+      @if (counts().vars) {
+        <span class="count">{{ counts().vars }}</span>
+      }
+    </button>
+    <button
+      type="button"
+      role="tab"
+      [class.active]="section() === 'body'"
+      [attr.aria-selected]="section() === 'body'"
+      (click)="section.set('body')"
+    >
+      {{ t('editor.body') }}
+      @if (draft().bodyType !== 'none') {
+        <span class="count">{{ t('editor.bodyTypes.' + draft().bodyType) }}</span>
+      }
+    </button>
+    <button
+      type="button"
+      role="tab"
+      [class.active]="section() === 'script'"
+      [attr.aria-selected]="section() === 'script'"
+      (click)="section.set('script')"
+    >
+      {{ t('editor.script') }}
+      @if (draft().postScript.trim()) {
+        <span class="dot" aria-hidden="true"></span>
+      }
+    </button>
+    <button
+      type="button"
+      role="tab"
+      [class.active]="section() === 'settings'"
+      [attr.aria-selected]="section() === 'settings'"
+      (click)="section.set('settings')"
+    >
+      {{ t('editor.settings') }}
+    </button>
+  </nav>
+
+  <section class="section" role="tabpanel">
+    @switch (section()) {
+      @case ('headers') {
+        <app-kv-table
+          [rows]="draft().headers ?? []"
+          [keyLabel]="t('editor.headerName')"
+          [addLabel]="t('editor.addHeader')"
+          [emptyLabel]="t('editor.noHeaders')"
+          (rowsChange)="setHeaders($event)"
+        />
+      }
+      @case ('vars') {
+        <app-kv-table
+          [rows]="draft().vars ?? []"
+          [keyLabel]="t('editor.varName')"
+          [addLabel]="t('editor.addVar')"
+          [emptyLabel]="t('editor.noVars')"
+          (rowsChange)="setVars($event)"
+        />
+      }
+      @case ('body') {
+        <div class="seg body-types" role="radiogroup" [attr.aria-label]="t('editor.bodyType')">
+          @for (b of bodyTypes; track b) {
+            <button
+              type="button"
+              role="radio"
+              [attr.aria-checked]="draft().bodyType === b"
+              [class.active]="draft().bodyType === b"
+              (click)="setBodyType(b)"
+            >
+              {{ t('editor.bodyTypes.' + b) }}
+            </button>
+          }
+        </div>
+        @switch (draft().bodyType) {
+          @case ('none') {
+            <p class="empty">{{ t('editor.noBody') }}</p>
+          }
+          @case ('form-urlencoded') {
+            <app-body-fields [rows]="draft().bodyFields ?? []" (rowsChange)="setFields($event)" />
+          }
+          @case ('multipart') {
+            <app-body-fields
+              [rows]="draft().bodyFields ?? []"
+              [multipart]="true"
+              (rowsChange)="setFields($event)"
+            />
+          }
+          @case ('binary') {
+            <div class="file-row">
+              <input
+                class="input mono"
+                [value]="draft().bodyFile"
+                [placeholder]="t('editor.filePath')"
+                [attr.aria-label]="t('editor.filePath')"
+                (input)="edit({ bodyFile: $any($event.target).value })"
+              />
+              <button type="button" class="btn" (click)="chooseBodyFile()">
+                {{ t('editor.chooseFile') }}
+              </button>
+            </div>
+            <p class="hint">{{ t('editor.binaryHint') }}</p>
+          }
+          @default {
+            <app-code-editor
+              class="code"
+              [value]="draft().body"
+              [language]="language()"
+              [label]="t('editor.body')"
+              (valueChange)="edit({ body: $event })"
+            />
+          }
+        }
+      }
+      @case ('script') {
+        <p class="hint">{{ t('editor.scriptHint') }}</p>
+        <app-code-editor
+          class="code"
+          [value]="draft().postScript"
+          language="javascript"
+          [label]="t('editor.script')"
+          (valueChange)="edit({ postScript: $event })"
+        />
+      }
+      @case ('settings') {
+        <div class="settings">
+          <label class="check">
+            <input
+              type="checkbox"
+              [checked]="draft().encodeUrl"
+              (change)="edit({ encodeUrl: $any($event.target).checked })"
+            />
+            <span>
+              {{ t('editor.encodeUrl') }}
+              <small>{{ t('editor.encodeUrlHint') }}</small>
+            </span>
+          </label>
+          <label class="check">
+            <input
+              type="checkbox"
+              [checked]="draft().followRedirects"
+              (change)="edit({ followRedirects: $any($event.target).checked })"
+            />
+            <span>{{ t('editor.followRedirects') }}</span>
+          </label>
+          <label class="field">
+            <span>{{ t('editor.maxRedirects') }}</span>
+            <input
+              class="input"
+              type="number"
+              min="0"
+              max="100"
+              [value]="draft().maxRedirects"
+              [disabled]="!draft().followRedirects"
+              (input)="
+                edit({ maxRedirects: number($any($event.target).value, draft().maxRedirects) })
+              "
+            />
+          </label>
+          <label class="field">
+            <span>{{ t('editor.timeout') }}</span>
+            <input
+              class="input"
+              type="number"
+              min="1"
+              [value]="draft().timeoutMs"
+              (input)="edit({ timeoutMs: number($any($event.target).value, draft().timeoutMs) })"
+            />
+          </label>
+        </div>
+      }
+    }
+  </section>
+
+  <footer class="footer">
+    @if (tab().error; as err) {
+      <div class="alert" role="alert">{{ t(errorKey(err.code), err.params ?? {}) }}</div>
+    }
+    <span class="spacer"></span>
+    @if (dirty()) {
+      <span class="unsaved">{{ t('common.unsaved') }}</span>
+    }
+    <button type="button" class="btn" [disabled]="!dirty()" (click)="revert()">
+      {{ t('common.revert') }}
+    </button>
+    <button
+      type="button"
+      class="btn primary"
+      [disabled]="!dirty()"
+      [attr.title]="t('editor.saveShortcut')"
+      (click)="save()"
+    >
+      {{ t('common.save') }}
+    </button>
+  </footer>
+</ng-container>

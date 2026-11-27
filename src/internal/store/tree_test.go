@@ -316,3 +316,13 @@ func TestRequestAndFolderRefs(t *testing.T) {
 	_, err = f.db.Request(ctx, 999)
 	wantCode(t, err, apperr.NotFound)
 }
+
+func TestFolderPathOf(t *testing.T) {
+	f := newTree(t)
+	path, err := f.db.FolderPathOf(ctx, f.admin)
+	if err != nil || !reflect.DeepEqual(path, []string{"users", "admin"}) {
+		t.Fatalf("path = %v, %v", path, err)
+	}
+	_, err = f.db.FolderPathOf(ctx, 999)
+	wantCode(t, err, apperr.NotFound)
+}

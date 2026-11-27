@@ -533,3 +533,31 @@ func renumber(ctx context.Context, tx *sql.Tx, table string, order []int64) erro
 	}
 	return nil
 }
+
+// FolderPathOf returns the names from the root down to a folder.
+func (d *DB) FolderPathOf(ctx context.Context, id int64) ([]string, error) {
+	rows, err := d.db.QueryContext(ctx, `WITH RECURSIVE up(id, parent_id, name, depth) AS (
+	    SELECT id, parent_id, name, 0 FROM folder WHERE id = ?
+	    UNION ALL
+	    SELECT f.id, f.parent_id, f.name, up.depth + 1 FROM folder f JOIN up ON f.id = up.parent_id
+	  ) SELECT name FROM up ORDER BY depth DESC`, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	path := []string{}
+	for rows.Next() {
+		var name string
+		if err := rows.Scan(&name); err != nil {
+			return nil, err
+		}
+		path = append(path, name)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	if len(path) == 0 {
+		return nil, apperr.New(apperr.NotFound)
+	}
+	return path, nil
+}

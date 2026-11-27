@@ -100,6 +100,11 @@
           {{ t('tree.newRequest') }}
         </button>
         <hr />
+        @if (isFolder(m.row.node)) {
+          <button type="button" role="menuitem" (click)="editFolder(m.row.node)">
+            {{ t('tree.editFolder') }}
+          </button>
+        }
         <button type="button" role="menuitem" (click)="renameFromMenu(m.row.node)">
           {{ t('common.rename') }}
         </button>

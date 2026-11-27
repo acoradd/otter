@@ -16,6 +16,7 @@ import { NodeRef, ROOT, TreeRow, TreeStore, nodeKey, sameNode } from '../core/tr
 import { NameForm } from '../shared/name-form';
 import { DropPosition, dropMove, dropPosition } from './drop';
 import { MoveDialog } from './move-dialog';
+import { TabsStore } from '../core/tabs.store';
 
 /** Fixed row height of the virtual scroll, in px (tree.scss). */
 export const ROW_HEIGHT = 26;
@@ -62,6 +63,7 @@ interface DropTarget {
 })
 export class Tree {
   protected readonly store = inject(TreeStore);
+  private readonly tabs = inject(TabsStore);
   private readonly transloco = inject(TranslocoService);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly viewport = viewChild(CdkVirtualScrollViewport);
@@ -108,6 +110,8 @@ export class Tree {
     this.store.selected.set(row.node);
     if (this.isFolder(row.node)) {
       this.store.toggle(row.node.id);
+    } else {
+      void this.tabs.open('request', row.node.id);
     }
   }
 
@@ -159,6 +163,11 @@ export class Tree {
     const folder = this.menuFolder();
     this.closeMenu();
     void this.store.createRequest(folder, this.transloco.translate('tree.newRequest'));
+  }
+
+  protected editFolder(node: TreeNode): void {
+    this.closeMenu();
+    void this.tabs.open('folder', node.id);
   }
 
   protected renameFromMenu(node: TreeNode): void {

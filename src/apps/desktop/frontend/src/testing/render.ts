@@ -10,6 +10,7 @@ import {
 import { provideTranslocoMessageformat } from '@jsverse/transloco-messageformat';
 import { Observable, of } from 'rxjs';
 
+import { MONACO_LOADER } from '../app/code-editor/code-editor';
 import en from '../i18n/en.json';
 import fr from '../i18n/fr.json';
 
@@ -62,6 +63,8 @@ export async function render<T>(
         loader: InlineLoader,
       }),
       provideTranslocoMessageformat(),
+      // jsdom cannot run Monaco: code editors stay text areas.
+      { provide: MONACO_LOADER, useValue: () => Promise.reject(new Error('no Monaco in tests')) },
       ...(options.providers ?? []),
     ],
   });

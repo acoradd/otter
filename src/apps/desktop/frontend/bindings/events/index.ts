@@ -14,6 +14,16 @@ import "../github.com/wailsapp/wails/v3/internal/eventcreate.js";
 export const EnvironmentChanged = "environment.changed";
 
 /**
+ * Name of the custom event "folder.changed".
+ */
+export const FolderChanged = "folder.changed";
+
+/**
+ * Name of the custom event "request.changed".
+ */
+export const RequestChanged = "request.changed";
+
+/**
  * Name of the custom event "settings.changed".
  */
 export const SettingsChanged = "settings.changed";

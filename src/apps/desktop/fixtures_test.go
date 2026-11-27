@@ -70,6 +70,32 @@ func TestWriteFrontendFixtures(t *testing.T) {
 	}
 	raw.Close()
 
+	editor := NewEditorService(db, rec.emit, nativeDialogs{})
+	draft := RequestDraft{
+		Method: "POST", URL: "{{baseUrl}}/v1/customers?expand=cards", BodyType: "json",
+		Body:       "{\n  \"name\": \"Ada Lovelace\",\n  \"email\": \"ada@example.test\"\n}",
+		PostScript: "bru.setVar(\"customerId\", res.body.id);",
+		EncodeURL:  true, FollowRedirects: true, MaxRedirects: 10, TimeoutMS: 30000,
+		Vars: []VarRow{{Key: "locale", Value: "en-GB", Enabled: true}},
+		Headers: []HeaderRow{
+			{Key: "Idempotency-Key", Value: "{{requestId}}", Enabled: true},
+			{Key: "X-Debug", Value: "1", Enabled: false},
+			{Key: "Accept-Encoding", Ignore: true, Enabled: true},
+		},
+		BodyFields: []BodyFieldRow{
+			{Key: "name", Value: "Ada Lovelace", Enabled: true},
+		},
+	}
+	if err := editor.SaveRequest(ctx, createCustomer, draft); err != nil {
+		t.Fatal(err)
+	}
+	if err := editor.SaveFolder(ctx, customers, FolderDraft{
+		Vars:    []VarRow{{Key: "resource", Value: "customers", Enabled: true}},
+		Headers: []HeaderRow{{Key: "Authorization", Value: "Bearer {{apiKey}}", Enabled: true}},
+	}); err != nil {
+		t.Fatal(err)
+	}
+
 	fixtures := map[string]any{
 		"app-info":         AppInfo{Version: "1.0.0"},
 		"settings":         must(settings.GetSettings(ctx)),
@@ -80,6 +106,8 @@ func TestWriteFrontendFixtures(t *testing.T) {
 		"tree-customers":   must(tree.GetChildren(ctx, payments, customers)),
 		"tree-cards":       must(tree.GetChildren(ctx, payments, cards)),
 		"folder-choices":   must(tree.GetFolderChoices(ctx, payments)),
+		"request-view":     must(editor.GetRequestView(ctx, createCustomer)),
+		"folder-view":      must(editor.GetFolderView(ctx, customers)),
 	}
 	for name, view := range fixtures {
 		b, err := json.MarshalIndent(view, "", "  ")
