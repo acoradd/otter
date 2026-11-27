@@ -11,6 +11,9 @@ import (
 const (
 	// EventWorkspacesChanged: a workspace was created, renamed or deleted.
 	EventWorkspacesChanged = "workspaces.changed"
+	// EventRuntimeVarsChanged: a runtime variable of the workspace was set
+	// (by a script) or deleted.
+	EventRuntimeVarsChanged = "runtimeVars.changed"
 	// EventEnvironmentChanged: an environment of the workspace was created,
 	// renamed, deleted, edited, or the active one changed.
 	EventEnvironmentChanged = "environment.changed"
@@ -195,5 +198,19 @@ func (s *WorkspaceService) changeEnvironment(ctx context.Context, id int64, chan
 		return err
 	}
 	s.emit(EventEnvironmentChanged, e.WorkspaceID)
+	return nil
+}
+
+// DeleteRuntimeVar deletes a runtime variable of the workspace, for its
+// active environment.
+func (s *WorkspaceService) DeleteRuntimeVar(ctx context.Context, workspaceID int64, key string) error {
+	w, err := s.db.Workspace(ctx, workspaceID)
+	if err != nil {
+		return err
+	}
+	if err := s.db.DeleteRuntimeVar(ctx, workspaceID, w.ActiveEnvironmentID, key); err != nil {
+		return err
+	}
+	s.emit(EventRuntimeVarsChanged, workspaceID)
 	return nil
 }

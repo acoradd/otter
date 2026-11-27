@@ -1,0 +1,141 @@
+<ng-container *transloco="let t">
+  <table class="grid-table merged">
+    <thead>
+      <tr>
+        <th class="col-check">
+          <span class="sr-only">{{ t('editor.enabled') }}</span>
+        </th>
+        <th class="col-name">{{ t('editor.headerName') }}</th>
+        <th>{{ t('editor.value') }}</th>
+        <th class="col-actions">
+          <span class="sr-only">{{ t('common.actions') }}</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (row of merged(); track row.track) {
+        @switch (row.kind) {
+          @case ('local') {
+            <tr
+              class="local"
+              [class.disabled]="!local(row).enabled"
+              [class.ignored]="local(row).ignore"
+              [attr.title]="title(row)"
+            >
+              <td class="col-check">
+                <input
+                  type="checkbox"
+                  [checked]="local(row).enabled && !local(row).ignore"
+                  [attr.aria-label]="t('editor.enabled')"
+                  (change)="toggleLocal(row)"
+                />
+              </td>
+              <td class="col-name" [attr.title]="title(row)">
+                <input
+                  class="input mono"
+                  [value]="local(row).key"
+                  [attr.aria-label]="t('editor.headerName')"
+                  [attr.data-local]="row.local"
+                  data-col="key"
+                  (input)="set(row.local!, { key: $any($event.target).value }, 'key', $event)"
+                />
+              </td>
+              <td>
+                @if (local(row).ignore) {
+                  <span class="struck mono">{{ row.inherited?.rawValue }}</span>
+                  <span class="pill muted">{{ t('editor.ignored') }}</span>
+                } @else {
+                  <app-var-input
+                    [value]="local(row).value"
+                    [vars]="vars()"
+                    [level]="level()"
+                    [label]="t('editor.value')"
+                    [attr.data-local]="row.local"
+                    data-col="value"
+                    (valueChange)="set(row.local!, { value: $event }, 'value')"
+                  />
+                }
+              </td>
+              <td class="col-actions">
+                @if (row.inherited) {
+                  <button
+                    type="button"
+                    class="icon-btn"
+                    [attr.aria-label]="t('editor.backToInherited')"
+                    [attr.title]="t('editor.backToInherited')"
+                    (click)="remove(row.local!)"
+                  >
+                    <svg viewBox="0 0 12 12" aria-hidden="true">
+                      <path d="M4.5 2.5L2 5l2.5 2.5M2 5h5a3 3 0 0 1 0 6H6" />
+                    </svg>
+                  </button>
+                } @else {
+                  <button
+                    type="button"
+                    class="icon-btn"
+                    [attr.aria-label]="t('editor.removeRow')"
+                    [attr.title]="t('editor.removeRow')"
+                    (click)="remove(row.local!)"
+                  >
+                    <svg viewBox="0 0 12 12" aria-hidden="true">
+                      <path d="M2 2l8 8M10 2l-8 8" />
+                    </svg>
+                  </button>
+                }
+              </td>
+            </tr>
+          }
+          @case ('inherited') {
+            <tr
+              class="inherited"
+              [class.ignored]="row.inherited!.ignored"
+              [attr.title]="title(row)"
+            >
+              <td class="col-check">
+                <input
+                  type="checkbox"
+                  [checked]="!row.inherited!.ignored"
+                  [attr.aria-label]="t('editor.enabled')"
+                  (change)="toggleInherited(row.inherited!)"
+                />
+              </td>
+              <td class="col-name" [attr.title]="title(row)">
+                <span class="name mono">{{ row.inherited!.key }}</span>
+              </td>
+              <td>
+                @if (row.inherited!.ignored) {
+                  <span class="struck mono">{{ row.inherited!.rawValue }}</span>
+                } @else {
+                  <app-var-input
+                    class="inherited-value"
+                    [value]="row.inherited!.rawValue"
+                    [vars]="vars()"
+                    [level]="level()"
+                    [label]="t('editor.value')"
+                    (valueChange)="override(row.inherited!, $event)"
+                  />
+                }
+              </td>
+              <td class="col-actions"></td>
+            </tr>
+          }
+          @case ('readonly') {
+            <tr class="inherited readonly">
+              <td class="col-check"></td>
+              <td class="col-name" [attr.title]="title(row)">
+                <span class="name mono">{{ row.inherited!.key }}</span>
+              </td>
+              <td>
+                <span class="mono">{{
+                  row.inherited!.computed ? t('editor.computedOnSend') : row.inherited!.value
+                }}</span>
+              </td>
+              <td class="col-actions"></td>
+            </tr>
+          }
+        }
+      }
+    </tbody>
+  </table>
+  <button type="button" class="btn" (click)="add({}, 'key')">{{ t('editor.addHeader') }}</button>
+</ng-container>

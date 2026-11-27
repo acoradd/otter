@@ -190,3 +190,28 @@ func TestEnvironmentCommands(t *testing.T) {
 		t.Fatalf("after deleting the active environment: %+v", view)
 	}
 }
+
+func TestDeleteRuntimeVar(t *testing.T) {
+	db := openDB(t)
+	rec := &emitted{}
+	s := NewWorkspaceService(db, rec.emit)
+	ws := must(s.CreateWorkspace(ctx, "API"))
+	wantCode(t, s.DeleteRuntimeVar(ctx, ws, "token"), apperr.NotFound)
+	wantCode(t, s.DeleteRuntimeVar(ctx, 999, "token"), apperr.NotFound)
+	rec.events = nil
+	// Scripts write runtime variables (step 7); here, through the preview's loader.
+	seedRuntime(t, db, ws, "token")
+	if err := s.DeleteRuntimeVar(ctx, ws, "token"); err != nil {
+		t.Fatal(err)
+	}
+	if len(rec.events) != 1 || rec.events[0] != (event{EventRuntimeVarsChanged, ws}) {
+		t.Fatalf("events = %+v", rec.events)
+	}
+}
+
+func seedRuntime(t *testing.T, db *store.DB, ws int64, key string) {
+	t.Helper()
+	if err := db.SetRuntimeVar(ctx, ws, 0, key, "value"); err != nil {
+		t.Fatal(err)
+	}
+}

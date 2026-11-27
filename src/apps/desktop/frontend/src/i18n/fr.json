@@ -129,8 +129,6 @@
     "varName": "Variable",
     "addHeader": "Ajouter un header",
     "addVar": "Ajouter une variable",
-    "noHeaders": "Aucun header",
-    "noVars": "Aucune variable",
     "ignored": "Ignoré",
     "ignoredHint": "Ce header, hérité d’un dossier, n’est pas envoyé.",
     "bodyType": "Type de body",
@@ -162,6 +160,42 @@
     "maxRedirects": "Redirections maximum",
     "timeout": "Timeout (ms)",
     "saveShortcut": "Enregistrer (Ctrl+S)",
-    "folderHint": "Toutes les requêtes de ce dossier et de ses sous-dossiers héritent de ces variables et headers."
+    "folderHint": "Toutes les requêtes de ce dossier et de ses sous-dossiers héritent de ces variables et headers.",
+    "backToInherited": "Revenir à la valeur héritée",
+    "computedOnSend": "Calculé à l’envoi",
+    "runtime": "runtime",
+    "deleteRuntime": "Supprimer la variable runtime {name}",
+    "undefinedUsedIn": "Non définie · utilisée dans {where}",
+    "defineHere": "Définir ici",
+    "undefinedCount": "{count, plural, one {# variable non définie} other {# variables non définies}}"
+  },
+  "source": {
+    "here": "Défini ici",
+    "folder": "Hérité de {path}",
+    "env": "Environnement {name}",
+    "runtime": "Variable runtime",
+    "auto": "Header automatique",
+    "computed": "Calculé par Otter",
+    "none": "Définie nulle part",
+    "undefined": "Définie nulle part",
+    "empty": "(vide)",
+    "hides": "Masque {value} ({source})",
+    "replaces": "Défini ici, remplace : {source}",
+    "ignoredBy": "ignoré par : {source}",
+    "runtimeHint": "Variable runtime, posée par un script post-request. Elle passe devant toutes les autres définitions.",
+    "usedIn": {
+      "url": "URL",
+      "body": "body",
+      "file": "chemin du fichier",
+      "header": "header {name}",
+      "field": "champ {name}"
+    }
+  },
+  "warnings": {
+    "UNRESOLVED_VAR": "'{{'{name}'}}' n’est pas définie.",
+    "VAR_CYCLE": "'{{'{name}'}}' fait référence à elle-même, directement ou non (ou trop profondément).",
+    "EMPTY_HEADER": "Le header {name} est vide une fois ses variables remplacées. Il est quand même envoyé.",
+    "INVALID_URL": "L’URL « {url} » n’est pas une URL http ou https valide.",
+    "EMPTY_URL": "L’URL est vide."
   }
 }

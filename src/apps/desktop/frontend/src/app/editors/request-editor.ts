@@ -10,9 +10,12 @@ import {
 
 import { CodeEditor, CodeLanguage } from '../code-editor/code-editor';
 import { errorKey } from '../core/error-key';
+import { PreviewStore, varMap } from '../core/preview.store';
 import { RequestTab, TabsStore, isDirty, tabKey } from '../core/tabs.store';
+import { VarInput } from '../shared/var-input';
 import { BodyFields } from './body-fields';
-import { KvTable } from './kv-table';
+import { MergedHeaders } from './merged-headers';
+import { MergedVars } from './merged-vars';
 
 export const METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'];
 export const BODY_TYPES = [
@@ -31,7 +34,7 @@ const LANGUAGES: Record<string, CodeLanguage> = { json: 'json', xml: 'xml', text
 /** The request editor: method and URL, then headers, variables, body, script and settings. */
 @Component({
   selector: 'app-request-editor',
-  imports: [TranslocoDirective, KvTable, BodyFields, CodeEditor],
+  imports: [TranslocoDirective, MergedHeaders, MergedVars, BodyFields, CodeEditor, VarInput],
   templateUrl: './request-editor.html',
   styleUrl: './editor.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -50,13 +53,29 @@ export class RequestEditor {
     const m = this.draft().method;
     return METHODS.includes(m) ? METHODS : [...METHODS, m];
   });
+  private readonly previews = inject(PreviewStore);
+  protected readonly preview = computed(() => this.previews.of(this.tab()));
+  protected readonly vars = computed(() => varMap(this.preview()));
+  /** Headers sent and variables defined, and where undefined variables are used. */
   protected readonly counts = computed(() => {
-    const d = this.draft();
+    const p = this.preview();
+    const missing = (p?.vars ?? []).filter((v) => !v.source);
+    const usedIn = (prefixes: string[]) =>
+      missing.filter((v) =>
+        (v.usedIn ?? []).some((u) => prefixes.some((x) => u === x || u.startsWith(x + ':'))),
+      ).length;
     return {
-      headers: (d.headers ?? []).filter((h) => h.enabled && h.key.trim()).length,
-      vars: (d.vars ?? []).filter((v) => v.enabled && v.key.trim()).length,
+      headers: (p?.headers ?? []).filter((h) => !h.ignored).length,
+      vars: (p?.vars ?? []).filter((v) => v.source).length,
+      missing: missing.length,
+      missingHeaders: usedIn(['header']),
+      missingBody: usedIn(['body', 'field', 'file']),
     };
   });
+  /** Warnings other than undefined variables (they are highlighted where used). */
+  protected readonly warnings = computed(() =>
+    (this.preview()?.warnings ?? []).filter((w) => w.code !== 'UNRESOLVED_VAR'),
+  );
   protected readonly language = computed(() => LANGUAGES[this.draft().bodyType] ?? 'plaintext');
   protected readonly urlPlaceholder = 'https://api.example.com/v1/users';
 

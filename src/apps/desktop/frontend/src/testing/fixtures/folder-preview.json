@@ -1,0 +1,105 @@
+{
+  "method": "",
+  "url": "",
+  "bodyType": "",
+  "body": "",
+  "bodyFile": "",
+  "bodyFields": [],
+  "vars": [
+    {
+      "key": "resource",
+      "value": "customers",
+      "rawValue": "customers",
+      "source": {
+        "kind": "folder",
+        "id": 1,
+        "name": "customers",
+        "path": [
+          "customers"
+        ]
+      },
+      "shadowed": [],
+      "secret": false,
+      "usedIn": []
+    },
+    {
+      "key": "baseUrl",
+      "value": "https://dev.payments.test",
+      "rawValue": "https://dev.payments.test",
+      "source": {
+        "kind": "env",
+        "id": 1,
+        "name": "dev"
+      },
+      "shadowed": [],
+      "secret": false,
+      "usedIn": []
+    },
+    {
+      "key": "apiKey",
+      "value": "dev-4f9a2c",
+      "rawValue": "dev-4f9a2c",
+      "source": {
+        "kind": "env",
+        "id": 1,
+        "name": "dev"
+      },
+      "shadowed": [],
+      "secret": true,
+      "usedIn": [
+        "header:Authorization"
+      ]
+    }
+  ],
+  "headers": [
+    {
+      "key": "Authorization",
+      "rawValue": "Bearer {{apiKey}}",
+      "value": "Bearer dev-4f9a2c",
+      "source": {
+        "kind": "folder",
+        "id": 1,
+        "name": "customers",
+        "path": [
+          "customers"
+        ]
+      },
+      "shadowed": [],
+      "ignored": false,
+      "readOnly": false,
+      "computed": false,
+      "secret": true
+    }
+  ],
+  "missing": [],
+  "warnings": [],
+  "inheritedVars": [
+    {
+      "key": "baseUrl",
+      "value": "https://dev.payments.test",
+      "rawValue": "https://dev.payments.test",
+      "source": {
+        "kind": "env",
+        "id": 1,
+        "name": "dev"
+      },
+      "shadowed": [],
+      "secret": false,
+      "usedIn": []
+    },
+    {
+      "key": "apiKey",
+      "value": "dev-4f9a2c",
+      "rawValue": "dev-4f9a2c",
+      "source": {
+        "kind": "env",
+        "id": 1,
+        "name": "dev"
+      },
+      "shadowed": [],
+      "secret": true,
+      "usedIn": []
+    }
+  ],
+  "inheritedHeaders": []
+}

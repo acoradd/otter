@@ -3,12 +3,14 @@
 
 import * as AppService from "./appservice.js";
 import * as EditorService from "./editorservice.js";
+import * as PreviewService from "./previewservice.js";
 import * as SettingsService from "./settingsservice.js";
 import * as TreeService from "./treeservice.js";
 import * as WorkspaceService from "./workspaceservice.js";
 export {
     AppService,
     EditorService,
+    PreviewService,
     SettingsService,
     TreeService,
     WorkspaceService

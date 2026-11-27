@@ -2,13 +2,16 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 import { TranslocoDirective } from '@jsverse/transloco';
 import { BodyFieldRow, EditorService } from '@bindings/apps/desktop';
 
+import { VarMap } from '../core/preview.store';
+import { VarInput } from '../shared/var-input';
+
 /**
  * The fields of a form URL-encoded or multipart body. In multipart, a field
  * is text or a file (a path read when sending), with an optional content type.
  */
 @Component({
   selector: 'app-body-fields',
-  imports: [TranslocoDirective],
+  imports: [TranslocoDirective, VarInput],
   template: `
     <ng-container *transloco="let t">
       <table class="grid-table">
@@ -63,12 +66,12 @@ import { BodyFieldRow, EditorService } from '@bindings/apps/desktop';
               }
               <td>
                 <div class="value">
-                  <input
-                    class="input mono"
+                  <app-var-input
                     [value]="row.value"
-                    [attr.aria-label]="row.file ? t('editor.filePath') : t('editor.value')"
+                    [vars]="vars()"
+                    [label]="row.file ? t('editor.filePath') : t('editor.value')"
                     [placeholder]="row.file ? t('editor.filePath') : ''"
-                    (input)="set($index, { value: $any($event.target).value })"
+                    (valueChange)="set($index, { value: $event })"
                   />
                   @if (row.file) {
                     <button type="button" class="btn" (click)="choose($index)">
@@ -127,9 +130,8 @@ import { BodyFieldRow, EditorService } from '@bindings/apps/desktop';
       display: flex;
       gap: var(--space-1);
     }
-    .value .input {
+    .value app-var-input {
       flex: 1;
-      min-width: 0;
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -137,6 +139,7 @@ import { BodyFieldRow, EditorService } from '@bindings/apps/desktop';
 export class BodyFields {
   readonly rows = input.required<BodyFieldRow[]>();
   readonly multipart = input(false);
+  readonly vars = input<VarMap>(new Map());
   readonly rowsChange = output<BodyFieldRow[]>();
 
   protected set(index: number, change: Partial<BodyFieldRow>): void {

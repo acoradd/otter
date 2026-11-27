@@ -17,15 +17,23 @@
         <option [value]="m" [selected]="m === draft().method">{{ m }}</option>
       }
     </select>
-    <input
-      class="input mono url"
+    <app-var-input
+      class="url"
       [value]="draft().url"
+      [vars]="vars()"
       [placeholder]="urlPlaceholder"
-      [attr.aria-label]="t('editor.url')"
-      spellcheck="false"
-      (input)="edit({ url: $any($event.target).value })"
+      [label]="t('editor.url')"
+      (valueChange)="edit({ url: $event })"
     />
   </div>
+
+  @if (warnings().length) {
+    <ul class="warnings" role="status">
+      @for (w of warnings(); track $index) {
+        <li>{{ t('warnings.' + w.code, w.params ?? {}) }}</li>
+      }
+    </ul>
+  }
 
   <nav class="subtabs" role="tablist">
     <button
@@ -36,7 +44,13 @@
       (click)="section.set('headers')"
     >
       {{ t('editor.headers') }}
-      @if (counts().headers) {
+      @if (counts().missingHeaders) {
+        <span
+          class="count bad"
+          [attr.title]="t('editor.undefinedCount', { count: counts().missingHeaders })"
+          >{{ counts().missingHeaders }}</span
+        >
+      } @else if (counts().headers) {
         <span class="count">{{ counts().headers }}</span>
       }
     </button>
@@ -48,7 +62,13 @@
       (click)="section.set('vars')"
     >
       {{ t('editor.variables') }}
-      @if (counts().vars) {
+      @if (counts().missing) {
+        <span
+          class="count bad"
+          [attr.title]="t('editor.undefinedCount', { count: counts().missing })"
+          >{{ counts().missing }}</span
+        >
+      } @else if (counts().vars) {
         <span class="count">{{ counts().vars }}</span>
       }
     </button>
@@ -60,7 +80,13 @@
       (click)="section.set('body')"
     >
       {{ t('editor.body') }}
-      @if (draft().bodyType !== 'none') {
+      @if (counts().missingBody) {
+        <span
+          class="count bad"
+          [attr.title]="t('editor.undefinedCount', { count: counts().missingBody })"
+          >{{ counts().missingBody }}</span
+        >
+      } @else if (draft().bodyType !== 'none') {
         <span class="count">{{ t('editor.bodyTypes.' + draft().bodyType) }}</span>
       }
     </button>
@@ -90,20 +116,16 @@
   <section class="section" role="tabpanel">
     @switch (section()) {
       @case ('headers') {
-        <app-kv-table
+        <app-merged-headers
           [rows]="draft().headers ?? []"
-          [keyLabel]="t('editor.headerName')"
-          [addLabel]="t('editor.addHeader')"
-          [emptyLabel]="t('editor.noHeaders')"
+          [preview]="preview()"
           (rowsChange)="setHeaders($event)"
         />
       }
       @case ('vars') {
-        <app-kv-table
+        <app-merged-vars
           [rows]="draft().vars ?? []"
-          [keyLabel]="t('editor.varName')"
-          [addLabel]="t('editor.addVar')"
-          [emptyLabel]="t('editor.noVars')"
+          [preview]="preview()"
           (rowsChange)="setVars($event)"
         />
       }
@@ -126,7 +148,11 @@
             <p class="empty">{{ t('editor.noBody') }}</p>
           }
           @case ('form-urlencoded') {
-            <app-body-fields [rows]="draft().bodyFields ?? []" (rowsChange)="setFields($event)" />
+            <app-body-fields
+              [rows]="draft().bodyFields ?? []"
+              [vars]="vars()"
+              (rowsChange)="setFields($event)"
+            />
           }
           @case ('multipart') {
             <app-body-fields
@@ -137,12 +163,12 @@
           }
           @case ('binary') {
             <div class="file-row">
-              <input
-                class="input mono"
+              <app-var-input
                 [value]="draft().bodyFile"
+                [vars]="vars()"
                 [placeholder]="t('editor.filePath')"
-                [attr.aria-label]="t('editor.filePath')"
-                (input)="edit({ bodyFile: $any($event.target).value })"
+                [label]="t('editor.filePath')"
+                (valueChange)="edit({ bodyFile: $event })"
               />
               <button type="button" class="btn" (click)="chooseBodyFile()">
                 {{ t('editor.chooseFile') }}
@@ -155,6 +181,7 @@
               class="code"
               [value]="draft().body"
               [language]="language()"
+              [vars]="vars()"
               [label]="t('editor.body')"
               (valueChange)="edit({ body: $event })"
             />

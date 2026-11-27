@@ -473,3 +473,37 @@ input[type='checkbox'] {
   background: var(--color-surface-2);
   color: var(--color-text-muted);
 }
+
+// The tooltip of a {{variable}} (VarInput, Monaco hovers).
+.var-tip {
+  position: absolute;
+  z-index: 25;
+  max-width: 420px;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  box-shadow: 0 6px 18px rgb(0 0 0 / 25%);
+  color: var(--color-text-muted);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  white-space: normal;
+  overflow-wrap: anywhere;
+  pointer-events: none;
+
+  .head {
+    color: var(--color-text);
+    font-family: var(--font-mono);
+  }
+}
+
+// {{variables}} in Monaco (code-editor.ts decorations).
+.otter-var {
+  color: var(--color-accent) !important;
+}
+
+.otter-var-missing {
+  color: var(--color-danger) !important;
+  text-decoration: underline wavy var(--color-danger);
+  text-underline-offset: 3px;
+}

@@ -1,0 +1,319 @@
+{
+  "method": "POST",
+  "url": "https://dev.payments.test/v1/customers?expand=cards",
+  "bodyType": "json",
+  "body": "{\n  \"name\": \"Ada Lovelace\",\n  \"email\": \"ada@example.test\"\n}",
+  "bodyFile": "",
+  "bodyFields": [],
+  "vars": [
+    {
+      "key": "locale",
+      "value": "en-GB",
+      "rawValue": "en-GB",
+      "source": {
+        "kind": "request"
+      },
+      "shadowed": [],
+      "secret": false,
+      "usedIn": []
+    },
+    {
+      "key": "resource",
+      "value": "customers",
+      "rawValue": "customers",
+      "source": {
+        "kind": "folder",
+        "id": 1,
+        "name": "customers",
+        "path": [
+          "customers"
+        ]
+      },
+      "shadowed": [],
+      "secret": false,
+      "usedIn": []
+    },
+    {
+      "key": "baseUrl",
+      "value": "https://dev.payments.test",
+      "rawValue": "https://dev.payments.test",
+      "source": {
+        "kind": "env",
+        "id": 1,
+        "name": "dev"
+      },
+      "shadowed": [],
+      "secret": false,
+      "usedIn": [
+        "url"
+      ]
+    },
+    {
+      "key": "apiKey",
+      "value": "dev-4f9a2c",
+      "rawValue": "dev-4f9a2c",
+      "source": {
+        "kind": "env",
+        "id": 1,
+        "name": "dev"
+      },
+      "shadowed": [],
+      "secret": true,
+      "usedIn": [
+        "header:Authorization"
+      ]
+    },
+    {
+      "key": "requestId",
+      "value": "{{requestId}}",
+      "rawValue": "",
+      "source": null,
+      "shadowed": [],
+      "secret": false,
+      "usedIn": [
+        "header:Idempotency-Key"
+      ]
+    }
+  ],
+  "headers": [
+    {
+      "key": "Authorization",
+      "rawValue": "Bearer {{apiKey}}",
+      "value": "Bearer dev-4f9a2c",
+      "source": {
+        "kind": "folder",
+        "id": 1,
+        "name": "customers",
+        "path": [
+          "customers"
+        ]
+      },
+      "shadowed": [],
+      "ignored": false,
+      "readOnly": false,
+      "computed": false,
+      "secret": true
+    },
+    {
+      "key": "Content-Type",
+      "rawValue": "application/json",
+      "value": "application/json",
+      "source": {
+        "kind": "auto"
+      },
+      "shadowed": [],
+      "ignored": false,
+      "readOnly": false,
+      "computed": false,
+      "secret": false
+    },
+    {
+      "key": "User-Agent",
+      "rawValue": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36",
+      "value": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36",
+      "source": {
+        "kind": "auto"
+      },
+      "shadowed": [],
+      "ignored": false,
+      "readOnly": false,
+      "computed": false,
+      "secret": false
+    },
+    {
+      "key": "Accept",
+      "rawValue": "*/*",
+      "value": "*/*",
+      "source": {
+        "kind": "auto"
+      },
+      "shadowed": [],
+      "ignored": false,
+      "readOnly": false,
+      "computed": false,
+      "secret": false
+    },
+    {
+      "key": "Accept-Encoding",
+      "rawValue": "gzip, deflate, br",
+      "value": "gzip, deflate, br",
+      "source": {
+        "kind": "auto"
+      },
+      "shadowed": [],
+      "ignored": true,
+      "ignoredBy": {
+        "kind": "request"
+      },
+      "readOnly": false,
+      "computed": false,
+      "secret": false
+    },
+    {
+      "key": "Idempotency-Key",
+      "rawValue": "{{requestId}}",
+      "value": "{{requestId}}",
+      "source": {
+        "kind": "request"
+      },
+      "shadowed": [],
+      "ignored": false,
+      "readOnly": false,
+      "computed": false,
+      "secret": false
+    },
+    {
+      "key": "Host",
+      "rawValue": "dev.payments.test",
+      "value": "dev.payments.test",
+      "source": {
+        "kind": "auto"
+      },
+      "shadowed": [],
+      "ignored": false,
+      "readOnly": true,
+      "computed": false,
+      "secret": false
+    },
+    {
+      "key": "Content-Length",
+      "rawValue": "59",
+      "value": "59",
+      "source": {
+        "kind": "auto"
+      },
+      "shadowed": [],
+      "ignored": false,
+      "readOnly": true,
+      "computed": false,
+      "secret": false
+    }
+  ],
+  "missing": [
+    "requestId"
+  ],
+  "warnings": [
+    {
+      "code": "UNRESOLVED_VAR",
+      "params": {
+        "name": "requestId"
+      }
+    }
+  ],
+  "inheritedVars": [
+    {
+      "key": "resource",
+      "value": "customers",
+      "rawValue": "customers",
+      "source": {
+        "kind": "folder",
+        "id": 1,
+        "name": "customers",
+        "path": [
+          "customers"
+        ]
+      },
+      "shadowed": [],
+      "secret": false,
+      "usedIn": []
+    },
+    {
+      "key": "baseUrl",
+      "value": "https://dev.payments.test",
+      "rawValue": "https://dev.payments.test",
+      "source": {
+        "kind": "env",
+        "id": 1,
+        "name": "dev"
+      },
+      "shadowed": [],
+      "secret": false,
+      "usedIn": []
+    },
+    {
+      "key": "apiKey",
+      "value": "dev-4f9a2c",
+      "rawValue": "dev-4f9a2c",
+      "source": {
+        "kind": "env",
+        "id": 1,
+        "name": "dev"
+      },
+      "shadowed": [],
+      "secret": true,
+      "usedIn": []
+    }
+  ],
+  "inheritedHeaders": [
+    {
+      "key": "Authorization",
+      "rawValue": "Bearer {{apiKey}}",
+      "value": "Bearer dev-4f9a2c",
+      "source": {
+        "kind": "folder",
+        "id": 1,
+        "name": "customers",
+        "path": [
+          "customers"
+        ]
+      },
+      "shadowed": [],
+      "ignored": false,
+      "readOnly": false,
+      "computed": false,
+      "secret": true
+    },
+    {
+      "key": "Content-Type",
+      "rawValue": "application/json",
+      "value": "application/json",
+      "source": {
+        "kind": "auto"
+      },
+      "shadowed": [],
+      "ignored": false,
+      "readOnly": false,
+      "computed": false,
+      "secret": false
+    },
+    {
+      "key": "User-Agent",
+      "rawValue": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36",
+      "value": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36",
+      "source": {
+        "kind": "auto"
+      },
+      "shadowed": [],
+      "ignored": false,
+      "readOnly": false,
+      "computed": false,
+      "secret": false
+    },
+    {
+      "key": "Accept",
+      "rawValue": "*/*",
+      "value": "*/*",
+      "source": {
+        "kind": "auto"
+      },
+      "shadowed": [],
+      "ignored": false,
+      "readOnly": false,
+      "computed": false,
+      "secret": false
+    },
+    {
+      "key": "Accept-Encoding",
+      "rawValue": "gzip, deflate, br",
+      "value": "gzip, deflate, br",
+      "source": {
+        "kind": "auto"
+      },
+      "shadowed": [],
+      "ignored": false,
+      "readOnly": false,
+      "computed": false,
+      "secret": false
+    }
+  ]
+}

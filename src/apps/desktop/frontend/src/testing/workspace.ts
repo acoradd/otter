@@ -8,6 +8,7 @@ import {
   WorkspaceItem,
   WorkspaceView,
 } from '@bindings/apps/desktop';
+import { Preview } from '@bindings/internal/resolve';
 
 import { FakeBackend } from './backend';
 import appInfo from './fixtures/app-info.json';
@@ -15,6 +16,8 @@ import environmentView from './fixtures/environment-view.json';
 import folderChoices from './fixtures/folder-choices.json';
 import folderView from './fixtures/folder-view.json';
 import requestView from './fixtures/request-view.json';
+import requestPreview from './fixtures/request-preview.json';
+import folderPreview from './fixtures/folder-preview.json';
 import settings from './fixtures/settings.json';
 import treeCards from './fixtures/tree-cards.json';
 import treeCustomers from './fixtures/tree-customers.json';
@@ -40,6 +43,10 @@ export const fixtures = {
   requestView: (): RequestView => structuredClone(requestView),
   /** customers (folder 1), with a variable and an Authorization header. */
   folderView: (): FolderView => structuredClone(folderView),
+  /** The preview of "Create customer" with the dev environment. */
+  requestPreview: (): Preview => structuredClone(requestPreview) as Preview,
+  /** The preview of customers (folder 1), as its editor holds it. */
+  folderPreview: (): Preview => structuredClone(folderPreview) as Preview,
 };
 
 /** Go with the demo workspace open ("Payments API", environment dev active). */
@@ -54,7 +61,9 @@ export function demoBackend(): FakeBackend {
     .on('TreeService.GetChildren', (_ws: number, folder: number) => tree.get(folder) ?? [])
     .on('TreeService.GetFolderChoices', fixtures.folderChoices())
     .on('EditorService.GetRequestView', fixtures.requestView())
-    .on('EditorService.GetFolderView', fixtures.folderView());
+    .on('EditorService.GetFolderView', fixtures.folderView())
+    .on('PreviewService.GetRequestPreview', fixtures.requestPreview())
+    .on('PreviewService.GetFolderPreview', fixtures.folderPreview());
 }
 
 /** Go with no workspace yet. */

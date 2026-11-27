@@ -1,0 +1,76 @@
+@use 'mixins' as *;
+
+:host {
+  @include stack(var(--space-2));
+  align-items: flex-start;
+}
+
+.col-name {
+  width: 32%;
+}
+
+.name {
+  @include ellipsis;
+  display: block;
+  padding: 0 var(--space-2);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+}
+
+tr.inherited {
+  color: var(--color-text-muted);
+
+  app-var-input {
+    border-style: dashed;
+    background: transparent;
+    opacity: 0.8;
+  }
+}
+
+tr.ignored .name,
+.struck {
+  text-decoration: line-through;
+  color: var(--color-text-muted);
+}
+
+.struck {
+  margin-right: var(--space-2);
+  padding: 0 var(--space-2);
+}
+
+tr.missing .name {
+  color: var(--color-danger);
+}
+
+.missing-text {
+  color: var(--color-danger);
+  font-size: var(--text-sm);
+}
+
+.value-text {
+  @include ellipsis;
+  display: block;
+  padding: 0 var(--space-2);
+}
+
+.missing-cell {
+  @include row(var(--space-2));
+  justify-content: space-between;
+  padding-left: var(--space-2);
+}
+
+.define {
+  white-space: nowrap;
+}
+
+.name-with-pill {
+  @include row(var(--space-2));
+  min-width: 0;
+
+  .name {
+    padding-right: 0;
+  }
+}

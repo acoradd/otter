@@ -24,6 +24,11 @@ export const FolderChanged = "folder.changed";
 export const RequestChanged = "request.changed";
 
 /**
+ * Name of the custom event "runtimeVars.changed".
+ */
+export const RuntimeVarsChanged = "runtimeVars.changed";
+
+/**
  * Name of the custom event "settings.changed".
  */
 export const SettingsChanged = "settings.changed";

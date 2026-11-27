@@ -38,7 +38,9 @@ describe('Tabs', () => {
 
     expect(backend.argsOf('EditorService.GetRequestView')).toEqual([[2]]);
     expect(tabNames(fixture)).toEqual(['Create customer']);
-    expect((find(fixture, 'input.url') as HTMLInputElement).value).toContain('/v1/customers');
+    expect((find(fixture, 'app-var-input.url input') as HTMLInputElement).value).toContain(
+      '/v1/customers',
+    );
   });
 
   it('opens a folder editor from the tree menu', async () => {
@@ -52,12 +54,14 @@ describe('Tabs', () => {
 
     expect(backend.argsOf('EditorService.GetFolderView')).toEqual([[1]]);
     expect(text(fixture)).toContain('Every request in this folder');
-    expect((find(fixture, 'app-kv-table input.mono') as HTMLInputElement).value).toBe('resource');
+    expect((find(fixture, 'app-merged-vars tr.local input.mono') as HTMLInputElement).value).toBe(
+      'resource',
+    );
 
     await click(fixture, 'Headers', 'app-folder-editor [role="tab"]');
     await type(
       fixture,
-      find(fixture, 'app-kv-table td input.mono[aria-label="Value"]') as HTMLInputElement,
+      find(fixture, 'app-merged-headers tr.local app-var-input input') as HTMLInputElement,
       'Bearer {{token}}',
     );
     await click(fixture, 'Save', 'app-folder-editor button');
@@ -82,7 +86,7 @@ describe('Tabs', () => {
     await tabs.open('request', 2);
     await settle(fixture);
 
-    await type(fixture, find(fixture, 'input.url') as HTMLInputElement, 'changed');
+    await type(fixture, find(fixture, 'app-var-input.url input') as HTMLInputElement, 'changed');
     await ctrl(fixture, 'w');
     expect(text(fixture)).toContain('Save the changes to “Create customer” before closing?');
     await click(fixture, 'Cancel', '[role="alertdialog"] button');
@@ -104,7 +108,7 @@ describe('Tabs', () => {
     const fixture = await renderShell();
     await TestBed.inject(TabsStore).open('request', 2);
     await settle(fixture);
-    await type(fixture, find(fixture, 'input.url') as HTMLInputElement, 'changed');
+    await type(fixture, find(fixture, 'app-var-input.url input') as HTMLInputElement, 'changed');
 
     await click(fixture, '', 'app-tab-bar .close');
     await click(fixture, 'Don’t save', '[role="alertdialog"] button');

@@ -3,13 +3,15 @@ import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { FolderDraft, HeaderRow, VarRow } from '@bindings/apps/desktop';
 
 import { errorKey } from '../core/error-key';
+import { PreviewStore } from '../core/preview.store';
 import { FolderTab, TabsStore, isDirty, tabKey } from '../core/tabs.store';
-import { KvTable } from './kv-table';
+import { MergedHeaders } from './merged-headers';
+import { MergedVars } from './merged-vars';
 
 /** The folder editor: the variables and headers its requests inherit. */
 @Component({
   selector: 'app-folder-editor',
-  imports: [TranslocoDirective, KvTable],
+  imports: [TranslocoDirective, MergedHeaders, MergedVars],
   template: `
     <ng-container *transloco="let t">
       <div class="crumbs" [attr.title]="tab().path.join(' › ')">
@@ -49,19 +51,17 @@ import { KvTable } from './kv-table';
 
       <section class="section" role="tabpanel">
         @if (section() === 'vars') {
-          <app-kv-table
+          <app-merged-vars
+            level="folder"
             [rows]="tab().draft.vars ?? []"
-            [keyLabel]="t('editor.varName')"
-            [addLabel]="t('editor.addVar')"
-            [emptyLabel]="t('editor.noVars')"
+            [preview]="preview()"
             (rowsChange)="setVars($event)"
           />
         } @else {
-          <app-kv-table
+          <app-merged-headers
+            level="folder"
             [rows]="tab().draft.headers ?? []"
-            [keyLabel]="t('editor.headerName')"
-            [addLabel]="t('editor.addHeader')"
-            [emptyLabel]="t('editor.noHeaders')"
+            [preview]="preview()"
             (rowsChange)="setHeaders($event)"
           />
         }
@@ -96,17 +96,20 @@ import { KvTable } from './kv-table';
 export class FolderEditor {
   readonly tab = input.required<FolderTab>();
   protected readonly tabs = inject(TabsStore);
+  private readonly previews = inject(PreviewStore);
   private readonly transloco = inject(TranslocoService);
 
   protected readonly section = signal<'vars' | 'headers'>('vars');
   protected readonly key = computed(() => tabKey(this.tab()));
   protected readonly dirty = computed(() => isDirty(this.tab()));
   protected readonly parents = computed(() => this.tab().path.slice(0, -1));
+  protected readonly preview = computed(() => this.previews.of(this.tab()));
+  /** Headers and variables that apply at this level, inherited ones included. */
   protected readonly counts = computed(() => {
-    const d = this.tab().draft;
+    const p = this.preview();
     return {
-      headers: (d.headers ?? []).filter((h) => h.enabled && h.key.trim()).length,
-      vars: (d.vars ?? []).filter((v) => v.enabled && v.key.trim()).length,
+      headers: (p?.headers ?? []).filter((h) => !h.ignored).length,
+      vars: (p?.vars ?? []).filter((v) => v.source).length,
     };
   });
 

@@ -15,6 +15,7 @@ declare module "@wailsio/runtime" {
             "environment.changed": number;
             "folder.changed": number;
             "request.changed": number;
+            "runtimeVars.changed": number;
             "settings.changed": main$0.Settings;
             "tree.changed": main$0.TreeChange;
             "workspaces.changed": number;

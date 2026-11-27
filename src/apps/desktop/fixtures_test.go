@@ -96,6 +96,8 @@ func TestWriteFrontendFixtures(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	// Linux, so the User-Agent does not depend on who writes the fixtures.
+	preview := NewPreviewService(db, "linux")
 	fixtures := map[string]any{
 		"app-info":         AppInfo{Version: "1.0.0"},
 		"settings":         must(settings.GetSettings(ctx)),
@@ -108,6 +110,8 @@ func TestWriteFrontendFixtures(t *testing.T) {
 		"folder-choices":   must(tree.GetFolderChoices(ctx, payments)),
 		"request-view":     must(editor.GetRequestView(ctx, createCustomer)),
 		"folder-view":      must(editor.GetFolderView(ctx, customers)),
+		"request-preview":  must(preview.GetRequestPreview(ctx, createCustomer, draft)),
+		"folder-preview":   must(preview.GetFolderPreview(ctx, customers, must(editor.GetFolderView(ctx, customers)).Draft)),
 	}
 	for name, view := range fixtures {
 		b, err := json.MarshalIndent(view, "", "  ")

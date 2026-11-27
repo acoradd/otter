@@ -129,8 +129,6 @@
     "varName": "Variable",
     "addHeader": "Add header",
     "addVar": "Add variable",
-    "noHeaders": "No headers",
-    "noVars": "No variables",
     "ignored": "Ignored",
     "ignoredHint": "This header, inherited from a folder, is not sent.",
     "bodyType": "Body type",
@@ -162,6 +160,42 @@
     "maxRedirects": "Maximum redirects",
     "timeout": "Timeout (ms)",
     "saveShortcut": "Save (Ctrl+S)",
-    "folderHint": "Every request in this folder and its subfolders inherits these variables and headers."
+    "folderHint": "Every request in this folder and its subfolders inherits these variables and headers.",
+    "backToInherited": "Back to the inherited value",
+    "computedOnSend": "Computed when sending",
+    "runtime": "runtime",
+    "deleteRuntime": "Delete the runtime variable {name}",
+    "undefinedUsedIn": "Not defined · used in {where}",
+    "defineHere": "Define here",
+    "undefinedCount": "{count, plural, one {# undefined variable} other {# undefined variables}}"
+  },
+  "source": {
+    "here": "Defined here",
+    "folder": "Inherited from {path}",
+    "env": "Environment {name}",
+    "runtime": "Runtime variable",
+    "auto": "Automatic header",
+    "computed": "Computed by Otter",
+    "none": "Defined nowhere",
+    "undefined": "Not defined anywhere",
+    "empty": "(empty)",
+    "hides": "Hides {value} ({source})",
+    "replaces": "Defined here, replaces: {source}",
+    "ignoredBy": "ignored by: {source}",
+    "runtimeHint": "Runtime variable, set by a post-request script. It wins over every other definition.",
+    "usedIn": {
+      "url": "URL",
+      "body": "body",
+      "file": "file path",
+      "header": "header {name}",
+      "field": "field {name}"
+    }
+  },
+  "warnings": {
+    "UNRESOLVED_VAR": "'{{'{name}'}}' is not defined.",
+    "VAR_CYCLE": "'{{'{name}'}}' refers to itself, directly or not (or too deeply).",
+    "EMPTY_HEADER": "The header {name} is empty once its variables are replaced. It is still sent.",
+    "INVALID_URL": "The URL “{url}” is not a valid http or https URL.",
+    "EMPTY_URL": "The URL is empty."
   }
 }

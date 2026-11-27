@@ -32,13 +32,18 @@ describe('RequestEditor', () => {
 
     expect(find(fixture, '.crumbs').textContent).toContain('customers');
     expect((find(fixture, 'app-request-editor select') as HTMLSelectElement).value).toBe('POST');
-    expect(input(fixture, 'input.url').value).toBe('{{baseUrl}}/v1/customers?expand=cards');
+    expect(input(fixture, 'app-var-input.url input').value).toBe(
+      '{{baseUrl}}/v1/customers?expand=cards',
+    );
     expect(
       buttons(fixture, 'app-tab-bar [role="tab"] .name').map((t) => t.textContent?.trim()),
     ).toEqual(['Create customer']);
     expect(find(fixture, 'app-tab-bar .method').textContent?.trim()).toBe('POST');
     // Headers: one enabled set, one disabled, one ignored (struck through, no value field).
-    expect(find(fixture, 'app-request-editor [role="tab"].active').textContent).toContain('2');
+    // Headers: one undefined variable is used there, in red.
+    expect(
+      find(fixture, 'app-request-editor [role="tab"].active .count.bad').textContent?.trim(),
+    ).toBe('1');
     expect(text(fixture)).toContain('Ignored');
   });
 
@@ -51,7 +56,7 @@ describe('RequestEditor', () => {
       ) as HTMLButtonElement;
     expect(save().disabled).toBe(true);
 
-    await type(fixture, input(fixture, 'input.url'), '{{baseUrl}}/v2/customers');
+    await type(fixture, input(fixture, 'app-var-input.url input'), '{{baseUrl}}/v2/customers');
     await choose(fixture, find(fixture, 'app-request-editor select') as HTMLSelectElement, 'PUT');
     expect(text(fixture)).toContain('Unsaved changes');
     expect(find(fixture, 'app-tab-bar .close').classList).toContain('dirty');
@@ -66,27 +71,31 @@ describe('RequestEditor', () => {
     ]);
   });
 
-  it('edits headers and variables in their tables', async () => {
+  it('adds and removes headers and variables of the request', async () => {
     const backend = demoBackend();
     const fixture = await openRequest();
 
     await click(fixture, 'Add header');
-    const keys = () => [
+    const names = () => [
       ...(fixture.nativeElement as HTMLElement).querySelectorAll<HTMLInputElement>(
-        'app-kv-table td input.mono[aria-label="Header"]',
+        'app-merged-headers tr.local input.mono[aria-label="Header"]',
       ),
     ];
-    await type(fixture, keys()[3], 'X-Tenant');
-    buttons(fixture, 'app-kv-table button[aria-label="Remove"]')[1].click();
+    await type(fixture, names().at(-1)!, 'X-Tenant');
+    // X-Debug, a disabled local row, goes.
+    const debugRow = names()
+      .find((n) => n.value === 'X-Debug')!
+      .closest('tr')!;
+    (debugRow.querySelector('button[aria-label="Remove"]') as HTMLButtonElement).click();
     await settle(fixture);
     await tab(fixture, 'Variables');
     await click(fixture, 'Add variable');
-    const varKeys = [
+    const varNames = [
       ...(fixture.nativeElement as HTMLElement).querySelectorAll<HTMLInputElement>(
-        'app-kv-table td input.mono[aria-label="Variable"]',
+        'app-merged-vars tr.local input.mono[aria-label="Variable"]',
       ),
     ];
-    await type(fixture, varKeys[1], 'page');
+    await type(fixture, varNames.at(-1)!, 'page');
     await click(fixture, 'Save', 'app-request-editor button');
 
     const [[, draft]] = backend.argsOf('EditorService.SaveRequest') as [[number, RequestDraft]];
@@ -183,13 +192,13 @@ describe('RequestEditor', () => {
       throw backendFailure('INVALID_METHOD', { method: 'GET X' });
     });
     const fixture = await openRequest('fr');
-    await type(fixture, input(fixture, 'input.url'), 'x');
+    await type(fixture, input(fixture, 'app-var-input.url input'), 'x');
     await click(fixture, 'Enregistrer', 'app-request-editor button');
 
     expect(find(fixture, 'app-request-editor [role="alert"]').textContent).toContain(
       '« GET X » n’est pas une méthode HTTP valide.',
     );
     await click(fixture, 'Annuler les modifications');
-    expect(input(fixture, 'input.url').value).toBe(saved().url);
+    expect(input(fixture, 'app-var-input.url input').value).toBe(saved().url);
   });
 });

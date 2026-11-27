@@ -13,11 +13,50 @@ import {
   untracked,
   viewChild,
 } from '@angular/core';
+import { TranslocoService } from '@jsverse/transloco';
 import type * as Monaco from 'monaco-editor';
 
+import { VarMap } from '../core/preview.store';
 import { AppSettings } from '../core/settings.store';
+import { describeVar } from '../core/source-label';
 
 export type CodeLanguage = 'json' | 'xml' | 'plaintext' | 'javascript';
+
+/** {{name}}, as Go reads it. */
+const PLACEHOLDER = /\{\{\s*([\w.-]+)\s*\}\}/g;
+
+/** What hovering {{name}} tells, for each open model (by URI). */
+const hovers = new Map<string, (name: string) => string[]>();
+const hoverLanguages = new Set<string>();
+
+/** Registers, once per language, the hover that looks up the model's variables. */
+function registerHover(m: typeof Monaco, language: string): void {
+  if (hoverLanguages.has(language)) {
+    return;
+  }
+  hoverLanguages.add(language);
+  m.languages.registerHoverProvider(language, {
+    provideHover(model, position) {
+      const describe = hovers.get(model.uri.toString());
+      if (!describe) {
+        return null;
+      }
+      const line = model.getLineContent(position.lineNumber);
+      for (const match of line.matchAll(PLACEHOLDER)) {
+        const start = match.index + 1;
+        const end = start + match[0].length;
+        if (position.column >= start && position.column < end) {
+          const [head, ...rest] = describe(match[1]);
+          return {
+            range: new m.Range(position.lineNumber, start, position.lineNumber, end),
+            contents: [{ value: '`' + head + '`' }, ...rest.map((value) => ({ value }))],
+          };
+        }
+      }
+      return null;
+    },
+  });
+}
 
 /**
  * Loads Monaco on demand. Tests replace it: jsdom cannot run Monaco, and the
@@ -81,12 +120,16 @@ export class CodeEditor {
   readonly language = input<CodeLanguage>('plaintext');
   readonly readOnly = input(false);
   readonly label = input('');
+  /** Variables of the preview: {{name}} is highlighted (red when undefined) and hovered. */
+  readonly vars = input<VarMap | null>(null);
   readonly valueChange = output<string>();
 
   protected readonly ready = signal(false);
   private readonly host = viewChild.required<ElementRef<HTMLElement>>('host');
   private readonly settings = inject(AppSettings);
   private readonly loader = inject(MONACO_LOADER);
+  private readonly transloco = inject(TranslocoService);
+  private decorations: Monaco.editor.IEditorDecorationsCollection | null = null;
   private monaco: typeof Monaco | null = null;
   private editor: Monaco.editor.IStandaloneCodeEditor | null = null;
   /** True while the editor's text is set from value(), not typed. */
@@ -105,8 +148,16 @@ export class CodeEditor {
       );
     });
     destroyRef.onDestroy(() => {
-      this.editor?.getModel()?.dispose();
+      const model = this.editor?.getModel();
+      if (model) {
+        hovers.delete(model.uri.toString());
+      }
+      model?.dispose();
       this.editor?.dispose();
+    });
+    effect(() => {
+      this.vars();
+      untracked(() => this.decorate());
     });
 
     effect(() => {
@@ -125,6 +176,7 @@ export class CodeEditor {
         const model = this.editor?.getModel();
         if (model && this.monaco) {
           this.monaco.editor.setModelLanguage(model, language);
+          registerHover(this.monaco, language);
         }
       });
     });
@@ -159,12 +211,45 @@ export class CodeEditor {
       fixedOverflowWidgets: true,
     });
     this.editor.onDidChangeModelContent(() => {
+      this.decorate();
       if (!this.setting) {
         this.valueChange.emit(this.editor!.getValue());
       }
     });
+    this.decorations = this.editor.createDecorationsCollection();
+    hovers.set(this.editor.getModel()!.uri.toString(), (name) =>
+      describeVar(this.transloco, name, this.vars()?.get(name)),
+    );
+    registerHover(m, this.language());
+    this.decorate();
     this.applyTheme();
     this.ready.set(true);
+  }
+
+  /** Colours every {{name}}: defined, or in red and wavy when defined nowhere. */
+  private decorate(): void {
+    const model = this.editor?.getModel();
+    const vars = this.vars();
+    if (!model || !this.monaco || !this.decorations) {
+      return;
+    }
+    if (!vars) {
+      this.decorations.clear();
+      return;
+    }
+    const text = model.getValue();
+    const list: Monaco.editor.IModelDeltaDecoration[] = [];
+    for (const match of text.matchAll(PLACEHOLDER)) {
+      const start = model.getPositionAt(match.index);
+      const end = model.getPositionAt(match.index + match[0].length);
+      list.push({
+        range: new this.monaco.Range(start.lineNumber, start.column, end.lineNumber, end.column),
+        options: {
+          inlineClassName: vars.get(match[1])?.source ? 'otter-var' : 'otter-var-missing',
+        },
+      });
+    }
+    this.decorations.set(list);
   }
 
   private applyTheme(): void {

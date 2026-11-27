@@ -36,6 +36,14 @@ export function DeleteEnvironment(id: number): $CancellablePromise<void> {
 }
 
 /**
+ * DeleteRuntimeVar deletes a runtime variable of the workspace, for its
+ * active environment.
+ */
+export function DeleteRuntimeVar(workspaceID: number, key: string): $CancellablePromise<void> {
+    return $Call.ByID(201331566, workspaceID, key);
+}
+
+/**
  * DeleteWorkspace deletes a workspace with everything in it.
  */
 export function DeleteWorkspace(id: number): $CancellablePromise<void> {

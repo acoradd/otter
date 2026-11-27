@@ -157,3 +157,27 @@
   font-size: var(--text-sm);
   color: var(--color-warning);
 }
+
+.url {
+  flex: 1;
+  height: 34px;
+}
+
+.subtabs .count.bad {
+  background: color-mix(in srgb, var(--color-danger) 20%, transparent);
+  color: var(--color-danger);
+  font-weight: 600;
+}
+
+.warnings {
+  margin: 0;
+  padding: var(--space-1) var(--space-3);
+  border-left: 3px solid var(--color-warning);
+  list-style: none;
+  font-size: var(--text-sm);
+  color: var(--color-warning);
+}
+
+.file-row app-var-input {
+  flex: 1;
+}
