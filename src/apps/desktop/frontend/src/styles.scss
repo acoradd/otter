@@ -299,3 +299,103 @@ input[type='checkbox'] {
   clip-path: inset(50%);
   white-space: nowrap;
 }
+
+// HTTP method labels.
+.method-get {
+  color: var(--method-get);
+}
+.method-post {
+  color: var(--method-post);
+}
+.method-put {
+  color: var(--method-put);
+}
+.method-patch {
+  color: var(--method-patch);
+}
+.method-delete {
+  color: var(--method-delete);
+}
+.method-head,
+.method-options {
+  color: var(--color-text-muted);
+}
+
+// Behind a menu or a dialog: catches the click that closes it.
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: rgb(0 0 0 / 35%);
+
+  &.clear {
+    background: transparent;
+  }
+}
+
+// A context menu, placed at the pointer.
+.menu {
+  position: fixed;
+  z-index: 21;
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+  padding: var(--space-1);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 25%);
+
+  button {
+    padding: var(--space-1) var(--space-3);
+    border: 0;
+    border-radius: calc(var(--radius) - 2px);
+    background: transparent;
+    text-align: left;
+    white-space: nowrap;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--color-hover);
+    }
+
+    &.danger {
+      color: var(--color-danger);
+    }
+  }
+
+  hr {
+    width: 100%;
+    margin: var(--space-1) 0;
+    border: 0;
+    border-top: 1px solid var(--color-border);
+  }
+}
+
+// A modal dialog, centered.
+.dialog {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  z-index: 21;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-width: min(480px, calc(100vw - 32px));
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  box-shadow: 0 16px 48px rgb(0 0 0 / 35%);
+  transform: translateX(-50%);
+
+  p {
+    margin: 0;
+  }
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}

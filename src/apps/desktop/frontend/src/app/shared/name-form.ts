@@ -24,6 +24,7 @@ import { TranslocoDirective } from '@jsverse/transloco';
         [placeholder]="label()"
         (input)="name.set(field.value)"
         (keydown.escape)="cancelled.emit()"
+        (blur)="compact() && leave()"
       />
       <button type="submit" class="btn primary" [disabled]="!name().trim()">
         {{ submitLabel() }}
@@ -40,6 +41,9 @@ import { TranslocoDirective } from '@jsverse/transloco';
       flex: 1;
       min-width: 0;
     }
+    :host-context(.rename) .input {
+      height: 22px;
+    }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -47,6 +51,8 @@ export class NameForm {
   readonly label = input.required<string>();
   readonly submitLabel = input.required<string>();
   readonly value = input('');
+  /** Just the field (in the tree): Enter submits, Escape or leaving it cancels. */
+  readonly compact = input(false);
   readonly submitted = output<string>();
   readonly cancelled = output<void>();
 
@@ -58,6 +64,16 @@ export class NameForm {
       this.name.set(this.value());
       this.field().nativeElement.select();
     });
+  }
+
+  /** Leaving the compact field keeps a changed name, as an editor would. */
+  protected leave(): void {
+    const name = this.name().trim();
+    if (name && name !== this.value()) {
+      this.submitted.emit(name);
+    } else {
+      this.cancelled.emit();
+    }
   }
 
   protected submit(event: Event): void {

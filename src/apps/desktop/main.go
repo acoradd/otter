@@ -25,6 +25,7 @@ func init() {
 	application.RegisterEvent[Settings](EventSettingsChanged)
 	application.RegisterEvent[int64](EventWorkspacesChanged)
 	application.RegisterEvent[int64](EventEnvironmentChanged)
+	application.RegisterEvent[TreeChange](EventTreeChanged)
 }
 
 func main() {
@@ -51,6 +52,7 @@ func main() {
 			service(NewAppService()),
 			service(NewSettingsService(db, emit)),
 			service(NewWorkspaceService(db, emit)),
+			service(NewTreeService(db, emit)),
 		},
 		Assets: application.AssetOptions{
 			Handler: application.AssetFileServerFS(assets),

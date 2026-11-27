@@ -1,0 +1,149 @@
+<ng-container *transloco="let t">
+  <div class="toolbar">
+    <span class="label">{{ t('tree.title') }}</span>
+    <button
+      type="button"
+      class="icon-btn"
+      [attr.aria-label]="t('tree.newFolder')"
+      [attr.title]="t('tree.newFolder')"
+      (click)="newFolder(0)"
+    >
+      <svg viewBox="0 0 12 12" aria-hidden="true">
+        <path d="M1 3.5V10h10V4.5H5.5l-1-1.5H1zM6 5.8v3M4.5 7.3h3" />
+      </svg>
+    </button>
+  </div>
+
+  <cdk-virtual-scroll-viewport
+    class="viewport"
+    [itemSize]="rowHeight"
+    role="tree"
+    tabindex="0"
+    [attr.aria-label]="t('tree.title')"
+    [class.dragging]="drag()?.active"
+    (contextmenu)="openMenu($event, null)"
+    (keydown)="onKeydown($event)"
+  >
+    <div
+      *cdkVirtualFor="let row of rows(); let i = index; trackBy: trackRow"
+      class="row"
+      role="treeitem"
+      [attr.data-row]="key(row.node)"
+      [attr.aria-level]="row.depth + 1"
+      [attr.aria-expanded]="isFolder(row.node) ? row.expanded : null"
+      [attr.aria-selected]="same(store.selected(), row.node)"
+      [class.selected]="same(store.selected(), row.node)"
+      [class.menu-open]="menuKey() === key(row.node)"
+      [class]="dropClass(i)"
+      [style.padding-left.px]="8 + row.depth * 14"
+      (click)="onRowClick(row)"
+      (pointerdown)="onPointerDown($event, row)"
+      (contextmenu)="openMenu($event, row)"
+    >
+      @if (isFolder(row.node)) {
+        <svg
+          class="chevron"
+          [class.open]="row.expanded"
+          [class.hidden]="!row.node.hasChildren"
+          viewBox="0 0 12 12"
+          aria-hidden="true"
+        >
+          <path d="M4.5 2.5L8 6l-3.5 3.5" />
+        </svg>
+        <svg class="folder-icon" viewBox="0 0 12 12" aria-hidden="true">
+          <path d="M1 3.5V10h10V4.5H5.5l-1-1.5H1z" />
+        </svg>
+      } @else {
+        <span class="method" [class]="'method method-' + row.node.method.toLowerCase()">{{
+          row.node.method
+        }}</span>
+      }
+      @if (same(store.renaming(), row.node)) {
+        <app-name-form
+          class="rename"
+          [label]="t('tree.name')"
+          [submitLabel]="t('common.rename')"
+          [value]="row.node.name"
+          [compact]="true"
+          (submitted)="store.rename(row.node, $event)"
+          (cancelled)="store.renaming.set(null)"
+        />
+      } @else {
+        <span class="name" [attr.title]="row.node.name">{{ row.node.name }}</span>
+      }
+    </div>
+  </cdk-virtual-scroll-viewport>
+
+  @if (store.rootLoaded() && !rows().length) {
+    <div class="empty first">
+      <p>{{ t('tree.empty') }}</p>
+      <button type="button" class="btn" (click)="newFolder(0)">{{ t('tree.newFolder') }}</button>
+    </div>
+  }
+
+  @if (drag()?.active) {
+    <div class="drag-ghost" [style.left.px]="drag()!.x + 12" [style.top.px]="drag()!.y + 8">
+      {{ drag()!.name }}
+    </div>
+  }
+
+  @if (menu(); as m) {
+    <div
+      class="backdrop clear"
+      (click)="closeMenu()"
+      (contextmenu)="$event.preventDefault(); closeMenu()"
+    ></div>
+    <div class="menu" role="menu" [style.left.px]="m.x" [style.top.px]="m.y">
+      <button type="button" role="menuitem" (click)="newFolder()">{{ t('tree.newFolder') }}</button>
+      @if (m.row) {
+        <button type="button" role="menuitem" (click)="newRequest()">
+          {{ t('tree.newRequest') }}
+        </button>
+        <hr />
+        <button type="button" role="menuitem" (click)="renameFromMenu(m.row.node)">
+          {{ t('common.rename') }}
+        </button>
+        <button type="button" role="menuitem" (click)="duplicate(m.row.node)">
+          {{ t('tree.duplicate') }}
+        </button>
+        <button type="button" role="menuitem" (click)="askMove(m.row.node)">
+          {{ t('tree.moveTo') }}
+        </button>
+        <hr />
+        <button type="button" role="menuitem" class="danger" (click)="askDelete(m.row.node)">
+          {{ t('common.delete') }}
+        </button>
+      }
+    </div>
+  }
+
+  @if (confirmDelete(); as node) {
+    <div class="backdrop" (click)="confirmDelete.set(null)"></div>
+    <div class="dialog" role="alertdialog" [attr.aria-label]="t('common.delete')">
+      <p>
+        {{
+          t(isFolder(node) ? 'tree.deleteFolderConfirm' : 'tree.deleteRequestConfirm', {
+            name: node.name,
+          })
+        }}
+      </p>
+      <div class="dialog-actions">
+        <button type="button" class="btn" (click)="confirmDelete.set(null)">
+          {{ t('common.cancel') }}
+        </button>
+        <button type="button" class="btn danger" (click)="doDelete()">
+          {{ t('common.delete') }}
+        </button>
+      </div>
+    </div>
+  }
+
+  @if (moving(); as node) {
+    <app-move-dialog
+      [node]="node"
+      [workspaceId]="store.workspaceId()"
+      (chosen)="moveTo($event)"
+      (cancelled)="moving.set(null)"
+    />
+  }
+</ng-container>

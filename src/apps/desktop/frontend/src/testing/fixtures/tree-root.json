@@ -1,0 +1,23 @@
+[
+  {
+    "kind": "folder",
+    "id": 1,
+    "name": "customers",
+    "method": "",
+    "hasChildren": true
+  },
+  {
+    "kind": "folder",
+    "id": 2,
+    "name": "payments",
+    "method": "",
+    "hasChildren": true
+  },
+  {
+    "kind": "folder",
+    "id": 3,
+    "name": "webhooks",
+    "method": "",
+    "hasChildren": false
+  }
+]

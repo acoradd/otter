@@ -39,7 +39,6 @@
     "workspace": "Workspace",
     "environment": "Environment",
     "noEnvironment": "No environment",
-    "noRequests": "No requests yet",
     "noWorkspace": "No workspace yet"
   },
   "workspace": {
@@ -82,6 +81,23 @@
     "NAME_REQUIRED": "Enter a name.",
     "INVALID_VAR_KEY": "“{key}” is not a valid variable name: use letters, digits, “_”, “.” and “-”, without spaces.",
     "DB_NOT_OTTER": "This file is not an Otter database.",
-    "DB_TOO_NEW": "This database was written by a newer version of Otter."
+    "DB_TOO_NEW": "This database was written by a newer version of Otter.",
+    "FOLDER_CYCLE": "A folder cannot move into itself or one of its subfolders."
+  },
+  "tree": {
+    "title": "Requests",
+    "name": "Name",
+    "newFolder": "New folder",
+    "newRequest": "New request",
+    "duplicate": "Duplicate",
+    "moveTo": "Move to…",
+    "copyName": "{name} (copy)",
+    "deleteFolderConfirm": "Delete the folder “{name}” and everything in it? This cannot be undone.",
+    "deleteRequestConfirm": "Delete the request “{name}”? This cannot be undone.",
+    "empty": "No folders yet. Create one to start adding requests.",
+    "moveTitle": "Move “{name}” to",
+    "moveFilter": "Filter folders",
+    "root": "Workspace root",
+    "noMatch": "No matching folder"
   }
 }

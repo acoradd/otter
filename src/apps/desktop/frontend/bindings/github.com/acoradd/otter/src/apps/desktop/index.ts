@@ -3,19 +3,28 @@
 
 import * as AppService from "./appservice.js";
 import * as SettingsService from "./settingsservice.js";
+import * as TreeService from "./treeservice.js";
 import * as WorkspaceService from "./workspaceservice.js";
 export {
     AppService,
     SettingsService,
+    TreeService,
     WorkspaceService
 };
+
+export {
+    NodeKind
+} from "./models.js";
 
 export type {
     AppInfo,
     EnvVarRow,
     EnvironmentItem,
     EnvironmentView,
+    FolderChoice,
     Settings,
+    TreeChange,
+    TreeNode,
     WorkspaceItem,
     WorkspaceView
 } from "./models.js";

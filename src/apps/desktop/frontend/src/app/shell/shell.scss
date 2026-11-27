@@ -53,10 +53,12 @@
 .sidebar {
   width: var(--sidebar-width);
   flex: none;
+  display: flex;
+  flex-direction: column;
   padding: var(--space-3);
   background: var(--color-surface);
   border-right: 1px solid var(--color-border);
-  overflow: auto;
+  overflow: hidden;
 }
 
 .content {

@@ -40,6 +40,27 @@ export interface EnvironmentView {
 }
 
 /**
+ * FolderChoice is a folder offered by "Move to", with its path from the root.
+ */
+export interface FolderChoice {
+    "id": number;
+    "path": string[] | null;
+}
+
+/**
+ * NodeKind tells a folder from a request.
+ */
+export enum NodeKind {
+    /**
+     * The Go zero value for the underlying type of the enum.
+     */
+    $zero = "",
+
+    NodeFolder = "folder",
+    NodeRequest = "request",
+};
+
+/**
  * Settings are the app's preferences, stored in otter.db.
  */
 export interface Settings {
@@ -57,6 +78,37 @@ export interface Settings {
      * LastWorkspaceID is the workspace shown at start, 0 when none was chosen.
      */
     "lastWorkspaceId": number;
+}
+
+/**
+ * TreeChange is the payload of tree.changed.
+ */
+export interface TreeChange {
+    "workspaceId": number;
+
+    /**
+     * FolderIDs are the folders whose children changed; 0 is the root.
+     */
+    "folderIds": number[] | null;
+}
+
+/**
+ * TreeNode is a row of the tree.
+ */
+export interface TreeNode {
+    "kind": NodeKind;
+    "id": number;
+    "name": string;
+
+    /**
+     * Method is the HTTP method of a request, "" for a folder.
+     */
+    "method": string;
+
+    /**
+     * HasChildren: a folder that can be expanded.
+     */
+    "hasChildren": boolean;
 }
 
 /**

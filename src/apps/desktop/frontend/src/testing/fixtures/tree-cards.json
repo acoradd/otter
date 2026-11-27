@@ -1,0 +1,9 @@
+[
+  {
+    "kind": "request",
+    "id": 3,
+    "name": "Delete card",
+    "method": "DELETE",
+    "hasChildren": false
+  }
+]

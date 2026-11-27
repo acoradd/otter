@@ -95,7 +95,7 @@ Frontend tests render each screen with Go faked: `src/testing/backend.ts` (`Fake
 
 Generated bindings (`frontend/bindings`) are committed. Import them through the `@bindings/*` path alias.
 
-A dev command seeds a large demo workspace (10 000 requests, 6 levels deep) to check the tree and search stay fast.
+A dev command seeds a large demo workspace (10 000 requests, 6 levels deep) to check the tree and search stay fast: `cd src && go run ./apps/seed` (close Otter first; `-db`, `-requests`, `-depth`, `-branching`). `TestLargeTreeStaysFast` in `internal/store` checks the same size in CI.
 
 ## Versions and releases
 

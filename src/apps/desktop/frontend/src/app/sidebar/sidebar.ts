@@ -10,13 +10,14 @@ import { TranslocoDirective } from '@jsverse/transloco';
 
 import { WorkspaceStore } from '../core/workspace.store';
 import { NameForm } from '../shared/name-form';
+import { Tree } from '../tree/tree';
 
 type Mode = 'idle' | 'create' | 'rename' | 'delete';
 
 /** The sidebar: workspace selector, environment selector, then the tree. */
 @Component({
   selector: 'app-sidebar',
-  imports: [TranslocoDirective, NameForm],
+  imports: [TranslocoDirective, NameForm, Tree],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -39,7 +39,6 @@
     "workspace": "Espace de travail",
     "environment": "Environnement",
     "noEnvironment": "Aucun environnement",
-    "noRequests": "Aucune requête pour l’instant",
     "noWorkspace": "Aucun espace de travail"
   },
   "workspace": {
@@ -82,6 +81,23 @@
     "NAME_REQUIRED": "Saisissez un nom.",
     "INVALID_VAR_KEY": "« {key} » n’est pas un nom de variable valide : utilisez des lettres, des chiffres, « _ », « . » et « - », sans espace.",
     "DB_NOT_OTTER": "Ce fichier n’est pas une base Otter.",
-    "DB_TOO_NEW": "Cette base a été écrite par une version plus récente d’Otter."
+    "DB_TOO_NEW": "Cette base a été écrite par une version plus récente d’Otter.",
+    "FOLDER_CYCLE": "Un dossier ne peut pas être déplacé dans lui-même ni dans un de ses sous-dossiers."
+  },
+  "tree": {
+    "title": "Requêtes",
+    "name": "Nom",
+    "newFolder": "Nouveau dossier",
+    "newRequest": "Nouvelle requête",
+    "duplicate": "Dupliquer",
+    "moveTo": "Déplacer vers…",
+    "copyName": "{name} (copie)",
+    "deleteFolderConfirm": "Supprimer le dossier « {name} » et tout son contenu ? Cette action est définitive.",
+    "deleteRequestConfirm": "Supprimer la requête « {name} » ? Cette action est définitive.",
+    "empty": "Aucun dossier pour l’instant. Créez-en un pour ajouter des requêtes.",
+    "moveTitle": "Déplacer « {name} » vers",
+    "moveFilter": "Filtrer les dossiers",
+    "root": "Racine de l’espace de travail",
+    "noMatch": "Aucun dossier ne correspond"
   }
 }

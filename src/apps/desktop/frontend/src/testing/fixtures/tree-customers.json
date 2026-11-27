@@ -1,0 +1,23 @@
+[
+  {
+    "kind": "folder",
+    "id": 4,
+    "name": "cards",
+    "method": "",
+    "hasChildren": true
+  },
+  {
+    "kind": "request",
+    "id": 1,
+    "name": "List customers",
+    "method": "GET",
+    "hasChildren": false
+  },
+  {
+    "kind": "request",
+    "id": 2,
+    "name": "Create customer",
+    "method": "POST",
+    "hasChildren": false
+  }
+]

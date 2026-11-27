@@ -19,6 +19,11 @@ export const EnvironmentChanged = "environment.changed";
 export const SettingsChanged = "settings.changed";
 
 /**
+ * Name of the custom event "tree.changed".
+ */
+export const TreeChanged = "tree.changed";
+
+/**
  * Name of the custom event "workspaces.changed".
  */
 export const WorkspacesChanged = "workspaces.changed";

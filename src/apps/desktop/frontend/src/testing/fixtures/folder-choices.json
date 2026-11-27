@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "path": [
+      "customers"
+    ]
+  },
+  {
+    "id": 4,
+    "path": [
+      "customers",
+      "cards"
+    ]
+  },
+  {
+    "id": 2,
+    "path": [
+      "payments"
+    ]
+  },
+  {
+    "id": 3,
+    "path": [
+      "webhooks"
+    ]
+  }
+]

@@ -114,9 +114,7 @@
         </div>
       </section>
 
-      <section class="block tree">
-        <p class="empty">{{ t('sidebar.noRequests') }}</p>
-      </section>
+      <app-tree />
     }
   } @else if (store.loaded()) {
     <p class="empty">{{ t('sidebar.noWorkspace') }}</p>
